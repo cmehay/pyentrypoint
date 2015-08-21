@@ -44,7 +44,7 @@ def get_links(*args):
                 continue
             # Check if entry is a link
             link_ip = split[0]
-            link_name_env = split[1].upper()
+            link_name_env = split[1].upper().replace('-', '_')
             link_name = split[1]
             env_var = "{link_name}_NAME".format(link_name=link_name_env)
             if nb_args and link_name not in args:
