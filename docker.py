@@ -40,7 +40,7 @@ def get_links(*args):
     with open('/etc/hosts') as hosts:
         for line in hosts:
             split = line.split()
-            if len(split) != 3:
+            if len(split) < 3:
                 continue
             # Check if entry is a link
             link_ip = split[0]
