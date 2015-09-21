@@ -1,13 +1,15 @@
 #! /usr/bin/env python3
 
-import os
 import json
+import os
 import re
+
 
 """
     get_docker_links is a kiss module which return a dict of links
     in a docker container, or a formated json if you run it
 """
+
 
 def _find_ports(link_name):
     rtn = {}
@@ -20,6 +22,7 @@ def _find_ports(link_name):
             }
     return rtn
 
+
 def _find_env(link_name):
     rtn = {}
     p = re.compile('^{link}_ENV_(.*)$'.format(link=link_name))
@@ -28,6 +31,14 @@ def _find_env(link_name):
         if m:
             rtn[m.group(1)] = value
     return rtn
+
+
+def is_duplicated(items, ip):
+    for item in items:
+        if ip == item["ip"]:
+            return True
+    return False
+
 
 def get_links(*args):
     """
@@ -40,7 +51,7 @@ def get_links(*args):
     with open('/etc/hosts') as hosts:
         for line in hosts:
             split = line.split()
-            if len(split) < 3:
+            if len(split) != 3:
                 continue
             # Check if entry is a link
             link_ip = split[0]
@@ -48,6 +59,9 @@ def get_links(*args):
             link_name = split[1]
             env_var = "{link_name}_NAME".format(link_name=link_name_env)
             if nb_args and link_name not in args:
+                continue
+            # Check if ip is already in dict
+            if is_duplicated(rtn, link_ip):
                 continue
             if env_var in os.environ:
                 network = os.environ[env_var].split(':')
@@ -58,12 +72,13 @@ def get_links(*args):
                 }
     return rtn
 
+
 def to_json(*args):
     print(json.dumps(get_links(*args),
-        sort_keys=True,
-        indent=4,
-        separators=(',', ': ')
-    ))
+                     sort_keys=True,
+                     indent=4,
+                     separators=(',', ': ')
+                     ))
 
 
 if __name__ == '__main__':
