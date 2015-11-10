@@ -1,0 +1,11 @@
+# Testing with python 2
+
+FROM python:2
+
+RUN pip install pytest
+
+ADD . /opt/docker-tools/
+
+WORKDIR /opt/docker-tools/
+
+CMD ["py.test", "."]

@@ -1,0 +1,46 @@
+testpython3:
+    build: .
+    dockerfile: Dockerfile.py3
+    #command: python3 docker_links.py
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+
+testpython2:
+    build: .
+    dockerfile: Dockerfile.py2
+    #command: python docker_links.py
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+
+test1:
+    image: busybox
+    command: sleep 30
+    expose:
+        - 800
+        - 8001/udp
+    environment:
+        FOO: bar
+
+# this is an uid compatible string
+test2:
+    image: busybox
+    command: sleep 30
+    expose:
+        - 800/udp
+        - 8001
+
+test3:
+    image: busybox
+    command: sleep 30
+    environment:
+        FOO: bar
+
+test4:
+    image: busybox
+    command: sleep 30
