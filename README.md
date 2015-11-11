@@ -147,3 +147,11 @@ links = DockerLinks()
 
 print(links.links('test1', 'test2')) # It also works with container uid
 ```
+
+
+### Running Tests
+
+To run tests, ensure that docker-compose is installed and run
+
+```shell
+docker-compose build && docker-compose up testpython2 testpython3
