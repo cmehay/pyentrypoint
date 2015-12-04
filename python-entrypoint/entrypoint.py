@@ -4,17 +4,7 @@
     Smart docker-entrypoint
 """
 
-import fnmatch
-import os
-from grp import getgrnam
-from io import open
-from pwd import getpwnam
-
-from six import string_types
 from twiggy import levels, log, quickSetup
-
-from docker_links import DockerLinks
-from pyyaml import Loader, load
 
 from config import Config
 
