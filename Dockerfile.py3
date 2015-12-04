@@ -2,10 +2,12 @@
 
 FROM python:3
 
-RUN pip3 install pytest
+#RUN pip3 install pytest
 
-ADD . /opt/docker-tools/
+ADD python-entrypoint /opt/docker-entrypoint/
 
-WORKDIR /opt/docker-tools/
+WORKDIR /opt/docker-entrypoint/
 
-CMD ["py.test", "."]
+ENTRYPOINT ["./entrypoint.py"]
+
+CMD ["echo", "ok"]
