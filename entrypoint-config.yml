@@ -1,0 +1,53 @@
+# Entrypoint configuration example
+
+# This entry should reflect CMD in Dockerfile
+command: git
+
+# This is a list with some subcommands to handle
+# when CMD is not `git` here.
+# By default, all args started with hyphen are handled.
+subcommands:
+    - "-*"
+    - clone
+    - init
+    - ls-files
+    # etc...
+
+# User and group to run the cmd.
+# Can be name or uid/gid.
+# Affect only command handled.
+# Dockerfile USER value by default.
+user: 1000
+group: 1000
+
+# These files should exist (ADD or COPY)
+# and should be jinja templated.
+config_files:
+    - /etc/gitconfig
+    - .ssh/config
+    - .ssh/id_rsa
+
+# These environment variables will be wiped before
+# exec command to keep them secret
+secret_env:
+    - SSHKEY
+
+# Links are handled here
+# Port, name, protocol or env variable can be used to identify the links
+# Raise an error if the link could not be identified
+links:
+    'ssh':
+        port: 22
+        name: 'ssh*'
+        protocol: tcp
+
+# Commands to run before applying configuration
+pre_conf_commands:
+    - echo something useless
+
+# commands to run after applying configuration
+post_conf_commads:
+    - echo something even useless
+
+# Enable debug to debug
+debug: true

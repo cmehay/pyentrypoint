@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 """
     DockerLinks a kiss class which help to get links info in a docker

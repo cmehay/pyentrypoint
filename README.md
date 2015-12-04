@@ -1,6 +1,6 @@
-# Python docker_links
+# py_docker_links
 
-Python docker_links is a kiss python module which helps to list
+py_docker_links is a kiss python module which helps to list
 linked containers inner containers.
 
 You can use it with `ENTRYPOINT` script to generate configuration.
