@@ -25,9 +25,3 @@ class Entrypoint(object):
             self.log.error(err)
         if self.config.debug:
             quickSetup(min_level=levels.DEBUG)
-
-        print(vars(self.config))
-        print(vars(self.config.links))
-
-
-Entrypoint()

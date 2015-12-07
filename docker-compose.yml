@@ -27,7 +27,6 @@ test1:
     environment:
         FOO: bar
 
-# this is an uid compatible string
 test2:
     image: busybox
     command: sleep 30

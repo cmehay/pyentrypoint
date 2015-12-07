@@ -1,6 +1,7 @@
 # Tests using pytest
 
 from docker_links import DockerLinks
+from entrypoint import Entrypoint
 
 LINKS = [
     'test1',
@@ -57,3 +58,22 @@ def test_ports():
         else:
             assert item["ports"]["800"]['protocol'] == 'udp'
             assert item["ports"]["8001"]['protocol'] == 'tcp'
+
+
+def test_entrypoint():
+    entry = Entrypoint()
+
+    print(vars(entry.config))
+
+    print('all')
+    for link in entry.config.links.all:
+        print(vars(link))
+    print('test1')
+    for link in entry.config.links.test1:
+        print(vars(link))
+    print('test2_800')
+    for link in entry.config.links.test2_800:
+        print(vars(link))
+    print('test1')
+    for link in entry.config.links.test2:
+        print(vars(link))

@@ -8,10 +8,10 @@ from grp import getgrnam
 from io import open
 from pwd import getpwnam
 
-from six import string_types
+from six import string_types, viewitems
 
 from docker_links import DockerLinks
-from pyyaml import Loader, load
+from yaml import Loader, load
 
 
 class Link(object):
@@ -21,7 +21,7 @@ class Link(object):
     def __init__(self, ip, env, port, protocol, names):
         self.ip = ip
         self.env = env
-        self.port = port
+        self.port = int(port)
         self.protocol = protocol
         self.uri = '{protocol}://{ip}:{port}'.format(
             protocol=protocol,
@@ -31,6 +31,31 @@ class Link(object):
         self.names = tuple(names)
 
 
+class Filter(object):
+
+    """Filtering links"""
+
+    @staticmethod
+    def name(link, name):
+        return bool(fnmatch.filter(link.names, name))
+
+    @staticmethod
+    def port(link, port):
+        return int(port) == link.port
+
+    @staticmethod
+    def protocol(link, protocol):
+        return protocol == link.protocol
+
+    @staticmethod
+    def env(link, env):
+        if isinstance(env, dict):
+            return viewitems(env) <= viewitems(link.env)
+        if isinstance(env, list):
+            return bool([key for key in env if key in link.env])
+        return str(env) in link.env
+
+
 class Links(object):
 
     """Links embeder"""
@@ -38,33 +63,26 @@ class Links(object):
     _links = []
     _conf = None
 
-    def __init__(self, links={}, conf=None):
-        if len(links) is 0:
+    def __init__(self, links=None, config=None):
+        if not links or len(links.links()) is 0:
             pass
 
-        for ip, link in links.links.items():
+        for ip, link in links.links().items():
             for port, protocol in link["ports"].items():
                 self._links.append(Link(ip=ip,
                                         env=link['environment'],
-                                        port=port,
+                                        port=int(port),
                                         protocol=protocol['protocol'],
                                         names=link['names']))
 
-        self._conf = conf
+        self._conf = config
 
     def _get_link(self, name):
-        conf = self._conf[name]
-        links = self._links
-        for link in links:
-            if 'port' in conf and link.port is not conf['port']:
-                links.pop(link)
-                continue
-            if 'name' in conf \
-                    and len(fnmatch.filter(link.names, conf['name'])) is 0:
-                links.pop(link)
-                continue
-            if 'protocol' in conf and link.protocol is not conf['protocol']:
-                links.pop(link)
+        config = self._conf[name]
+        print(config)
+        links = list(self._links)
+        for key, val in config.items():
+            links = [link for link in links if getattr(Filter, key)(link, val)]
 
         return tuple(links)
 

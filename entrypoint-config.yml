@@ -40,6 +40,9 @@ links:
         port: 22
         name: 'ssh*'
         protocol: tcp
+        # env can be list, dict or string
+        env:
+            FOO: bar
 
 # Commands to run before applying configuration
 pre_conf_commands:

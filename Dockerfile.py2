@@ -2,10 +2,11 @@
 
 FROM python:2
 
-RUN pip install pytest
+RUN pip install pytest twiggy six pyyaml
 
-ADD . /opt/docker-tools/
+ADD python-entrypoint /opt/python-entrypoint/
+ADD tests/entrypoint-config.yml /opt/python-entrypoint/
 
-WORKDIR /opt/docker-tools/
+WORKDIR /opt/python-entrypoint/
 
-CMD ["py.test", "."]
+CMD ["py.test", "-s", "."]
