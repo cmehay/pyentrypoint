@@ -2,11 +2,16 @@
 
 FROM python:3
 
-RUN pip3 install pytest twiggy six pyyaml
+RUN pip3 install pytest twiggy six pyyaml jinja2
 
-ADD python-entrypoint /opt/python-entrypoint/
-ADD tests/entrypoint-config.yml /opt/python-entrypoint/
+ENV PYTHONPATH /opt/pyentrypoint/
 
-WORKDIR /opt/python-entrypoint/
+ADD pyentrypoint /opt/pyentrypoint/
+ADD tests /opt/pyentrypoint/tests
+ADD tests/entrypoint-config.yml /opt/pyentrypoint/
+
+ADD tests/test_template /tmp/tests
+
+WORKDIR /opt/pyentrypoint/
 
 CMD ["py.test", "-s", "."]

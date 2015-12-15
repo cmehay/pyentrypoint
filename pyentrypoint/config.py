@@ -1,17 +1,18 @@
 """
     Configuration
 """
-
 import fnmatch
 import os
 from grp import getgrnam
 from io import open
 from pwd import getpwnam
 
-from six import string_types, viewitems
-
+from command import Command
 from docker_links import DockerLinks
-from yaml import Loader, load
+from six import string_types
+from six import viewitems
+from yaml import load
+from yaml import Loader
 
 
 class Link(object):
@@ -30,30 +31,25 @@ class Link(object):
         )
         self.names = tuple(names)
 
+    def _filter_name(self, name):
+        "return true if name match"
+        return bool(fnmatch.filter(self.names, name))
 
-class Filter(object):
+    def _filter_port(self, port):
+        "return true if port match"
+        return int(port) == self.port
 
-    """Filtering links"""
+    def _filter_protocol(self, protocol):
+        "return true if protocol match"
+        return protocol == self.protocol
 
-    @staticmethod
-    def name(link, name):
-        return bool(fnmatch.filter(link.names, name))
-
-    @staticmethod
-    def port(link, port):
-        return int(port) == link.port
-
-    @staticmethod
-    def protocol(link, protocol):
-        return protocol == link.protocol
-
-    @staticmethod
-    def env(link, env):
+    def _filter_env(self, env):
+        "return true if env match"
         if isinstance(env, dict):
-            return viewitems(env) <= viewitems(link.env)
+            return viewitems(env) <= viewitems(self.env)
         if isinstance(env, list):
-            return bool([key for key in env if key in link.env])
-        return str(env) in link.env
+            return bool([key for key in env if key in self.env])
+        return str(env) in self.env
 
 
 class Links(object):
@@ -62,6 +58,8 @@ class Links(object):
 
     _links = []
     _conf = None
+    _options = {'single': False,
+                'required': True}
 
     def __init__(self, links=None, config=None):
         if not links or len(links.links()) is 0:
@@ -79,15 +77,28 @@ class Links(object):
 
     def _get_link(self, name):
         config = self._conf[name]
-        print(config)
-        links = list(self._links)
+        links = self._links
+        print('len all:', len(links))
         for key, val in config.items():
-            links = [link for link in links if getattr(Filter, key)(link, val)]
+            if key in self._options:
+                self._options[key] = val
+                continue
+            links = [link for link in links
+                     if getattr(link, "_filter_{}".format(key))(val)]
 
+        print('len:', len(links))
+        if self._options['required'] and len(links) is 0:
+            raise Exception("No links was found for {name}".format(name=name))
+        if self._options['single'] and len(links) > 1:
+            raise Exception("Only one link should be provided for {name}"
+                            .format(name=name))
+        if self._options['single']:
+            return links[0]
         return tuple(links)
 
     @classmethod
     def _add_name(cls, name):
+        "Add method attribute name"
         setattr(cls, name, property(lambda self: self._get_link(name)))
 
     @property
@@ -105,6 +116,8 @@ class Config(object):
     _config_file = 'entrypoint-config.yml'
 
     _config = {}
+    _links = None
+    _args = []
 
     def _return_item_lst(self, item):
         """Return item as a list"""
@@ -114,7 +127,7 @@ class Config(object):
             return self._config[item]
         return []
 
-    def __init__(self):
+    def __init__(self, args=[]):
         if not os.path.isfile(self._config_file):
             return
         try:
@@ -123,6 +136,7 @@ class Config(object):
         except Exception as err:
             # TODO: logger
             print(err)
+        self._args = args
 
     @property
     def as_config(self):
@@ -132,10 +146,11 @@ class Config(object):
     @property
     def command(self):
         "Main command to run."
-        if 'command' in self._config:
-            return self._config['command']
-        elif 'cmd' in self._config:
-            return self._config['cmd']
+        cmd = self._args[0] if self._args else ''
+        for key in ['command', 'cmd']:
+            if key in self._config:
+                cmd = self._config[key]
+        return Command(cmd, self, self._args)
 
     @property
     def subcommands(self):
@@ -172,26 +187,36 @@ class Config(object):
 
     @property
     def links(self):
-        """Links configs."""
+        """Links configs singleton."""
         links = DockerLinks()
+        if self._links:
+            return self._links
         if 'links' not in self._config:
-            return Links(links=links)
-        links = Links(links=links, config=self._config['links'])
+            self._links = Links(links=links)
+            return self._links
+        self._links = Links(links=links, config=self._config['links'])
         for name in self._config['links']:
-            links._add_name(name)
-        return links
+            self._links._add_name(name)
+        return self._links
 
     @property
-    def pre_conf_command(self):
-        """Return Exec object of preconf command"""
-        if 'pre_conf_command' in self._config:
-            return self._config['pre_conf_command']
+    def pre_conf_commands(self):
+        """Return list of preconf commands"""
+        if 'pre_conf_commands' in self._config:
+            return self._return_item_lst(self._config['pre_conf_command'])
 
     @property
-    def post_conf_command(self):
-        """Return Exec object of preconf command"""
-        if 'post_conf_command' in self._config:
-            return self._config['post_conf_command']
+    def post_conf_commands(self):
+        """Return list of postconf commands"""
+        if 'post_conf_commands' in self._config:
+            return self._return_item_lst(self._config['post_conf_command'])
+
+    @property
+    def clean_env(self):
+        """Clean env from linked containers before running command"""
+        if 'clean_env' in self._config:
+            return bool(self._config['clean_env'])
+        return True
 
     @property
     def debug(self):

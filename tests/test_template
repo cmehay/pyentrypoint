@@ -1,0 +1,3 @@
+{% for link in links.all %}
+{{link.uri}}
+{% endfor %}

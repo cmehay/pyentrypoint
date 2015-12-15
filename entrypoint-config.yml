@@ -43,14 +43,24 @@ links:
         # env can be list, dict or string
         env:
             FOO: bar
+        # Single doesn't allow multiple links for this id
+        # false by default
+        single: true
+        # Set to false to get optional link
+        # true by default
+        required: true
 
 # Commands to run before applying configuration
 pre_conf_commands:
     - echo something useless
 
 # commands to run after applying configuration
-post_conf_commads:
+post_conf_commands:
     - echo something even useless
+
+# Cleanup environment from variables created by linked containers
+# before running command (True by default)
+clean_env: True
 
 # Enable debug to debug
 debug: true

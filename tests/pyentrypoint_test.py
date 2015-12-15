@@ -1,5 +1,4 @@
 # Tests using pytest
-
 from docker_links import DockerLinks
 from entrypoint import Entrypoint
 
@@ -60,20 +59,23 @@ def test_ports():
             assert item["ports"]["8001"]['protocol'] == 'tcp'
 
 
-def test_entrypoint():
+def test_entrypoint_links():
+    entry = Entrypoint()
+    links = entry.config.links
+
+    assert len(links.all) == 4
+
+    assert len(links.test1) == 2
+
+    assert links.test2_800.port == 800
+
+
+def test_templates():
     entry = Entrypoint()
 
-    print(vars(entry.config))
+    conf = entry.config
 
-    print('all')
-    for link in entry.config.links.all:
-        print(vars(link))
-    print('test1')
-    for link in entry.config.links.test1:
-        print(vars(link))
-    print('test2_800')
-    for link in entry.config.links.test2_800:
-        print(vars(link))
-    print('test1')
-    for link in entry.config.links.test2:
-        print(vars(link))
+    entry.apply_conf()
+
+    with open(conf.config_files[0], mode='r') as r:
+        print(r.read())
