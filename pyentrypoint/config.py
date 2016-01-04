@@ -56,15 +56,16 @@ class Links(object):
 
     """Links embeder"""
 
-    _links = []
     _conf = None
     _options = {'single': False,
                 'required': True}
 
-    def __init__(self, links=None, config=None):
+    def __init__(self, config=None):
+        links = DockerLinks()
         if not links or len(links.links()) is 0:
             pass
 
+        self._links = []
         for ip, link in links.links().items():
             for port, protocol in link["ports"].items():
                 self._links.append(Link(ip=ip,
@@ -78,21 +79,20 @@ class Links(object):
     def _get_link(self, name):
         config = self._conf[name]
         links = self._links
-        print('len all:', len(links))
+        options = dict(self._options)
         for key, val in config.items():
-            if key in self._options:
-                self._options[key] = val
+            if key in options:
+                options[key] = val
                 continue
             links = [link for link in links
                      if getattr(link, "_filter_{}".format(key))(val)]
 
-        print('len:', len(links))
-        if self._options['required'] and len(links) is 0:
+        if options['required'] and len(links) is 0:
             raise Exception("No links was found for {name}".format(name=name))
-        if self._options['single'] and len(links) > 1:
+        if options['single'] and len(links) > 1:
             raise Exception("Only one link should be provided for {name}"
                             .format(name=name))
-        if self._options['single']:
+        if options['single']:
             return links[0]
         return tuple(links)
 
@@ -155,7 +155,10 @@ class Config(object):
     @property
     def subcommands(self):
         """Subcommands to handle as arguments."""
-        return self._return_item_lst('subcommands')
+        rtn = self._return_item_lst('subcommands')
+        if not rtn:
+            return ['-*']
+        return rtn
 
     @property
     def user(self):
@@ -188,13 +191,12 @@ class Config(object):
     @property
     def links(self):
         """Links configs singleton."""
-        links = DockerLinks()
         if self._links:
             return self._links
         if 'links' not in self._config:
-            self._links = Links(links=links)
+            self._links = Links()
             return self._links
-        self._links = Links(links=links, config=self._config['links'])
+        self._links = Links(config=self._config['links'])
         for name in self._config['links']:
             self._links._add_name(name)
         return self._links
