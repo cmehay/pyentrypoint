@@ -57,8 +57,8 @@ class Links(object):
     """Links embeder"""
 
     _conf = None
-    _options = {'single': False,
-                'required': True}
+    _def_options = {'single': False,
+                    'required': True}
 
     def __init__(self, config=None):
         links = DockerLinks()
@@ -79,7 +79,7 @@ class Links(object):
     def _get_link(self, name):
         config = self._conf[name]
         links = self._links
-        options = dict(self._options)
+        options = dict(self._def_options)
         for key, val in config.items():
             if key in options:
                 options[key] = val
@@ -115,10 +115,6 @@ class Config(object):
     # entrypoint-config.yml
     _config_file = 'entrypoint-config.yml'
 
-    _config = {}
-    _links = None
-    _args = []
-
     def _return_item_lst(self, item):
         """Return item as a list"""
         if item in self._config:
@@ -128,6 +124,9 @@ class Config(object):
         return []
 
     def __init__(self, args=[]):
+        self._config = {}
+        self._args = []
+        self._links = None
         if not os.path.isfile(self._config_file):
             return
         try:
