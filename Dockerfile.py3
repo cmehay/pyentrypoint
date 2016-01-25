@@ -10,7 +10,7 @@ ADD pyentrypoint /opt/pyentrypoint/
 ADD tests /opt/pyentrypoint/tests
 ADD tests/entrypoint-config.yml /opt/pyentrypoint/
 
-ADD tests/test_template /tmp/tests
+ADD tests/test_template.yml.tpl /tmp/test_template.yml
 
 WORKDIR /opt/pyentrypoint/
 

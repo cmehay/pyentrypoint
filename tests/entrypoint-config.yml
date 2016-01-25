@@ -7,7 +7,7 @@ user: 1000
 group: 1000
 
 config_files:
-    - /tmp/tests
+    - /tmp/test_template.yml
 
 secret_env:
     - SSHKEY

@@ -2,12 +2,14 @@
 """
     Smart docker-entrypoint
 """
+import os
 from subprocess import PIPE
 from subprocess import Popen
 from sys import argv
 
 from command import Command
 from config import Config
+from docker_links import DockerLinks
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 from twiggy import levels
@@ -40,7 +42,9 @@ class Entrypoint(object):
             with open(template, mode='w') as f:
                 self.log.info('Applying conf to {}'.format(template))
                 f.write(temp.render(config=self.config,
-                                    links=self.config.links))
+                                    links=self.config.links,
+                                    env=os.environ,
+                                    containers=DockerLinks().to_containers()))
 
     def run_conf_cmd(self, cmd):
         self.log.info('run command: {}'.format(cmd))

@@ -7,11 +7,17 @@ import json
 import os
 import re
 
+from container import Container
+from links import Links
+
 
 class DockerLinks(object):
 
     "List all links and return a dictionnary of ip addresses with \
         link names, environment, ports and protocols."
+
+    _links = None
+    _containers = None
 
     def __init__(self):
         self._get_links()
@@ -72,6 +78,27 @@ class DockerLinks(object):
                            separators=(',', ': '),
                            )
                 )
+
+    def to_containers(self):
+        "Return tuple of Container object"
+        if self._containers:
+            return self._containers
+        ctn = []
+        links = self.get_links()
+        for ip, item in self.all_links.items():
+            ctn.append(Container(ip=ip,
+                                 env=item['environment'],
+                                 names=item['names'],
+                                 links=links))
+        self._containers = tuple(ctn)
+        return self._containers
+
+    def get_links(self):
+        "Get all links object"
+        if self._links:
+            return self._links.all
+        self._links = Links(links=self)
+        return self._links.all
 
 
 def _find_ports(link_name):
