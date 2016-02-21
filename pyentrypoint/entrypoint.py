@@ -2,19 +2,25 @@
 """
     Smart docker-entrypoint
 """
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import os
 from subprocess import PIPE
 from subprocess import Popen
 from sys import argv
+from sys import stdout
 
-from command import Command
-from config import Config
-from docker_links import DockerLinks
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 from twiggy import levels
 from twiggy import log
 from twiggy import quickSetup
+
+from .config import Config
+from .docker_links import DockerLinks
+
+__all__ = ['Entrypoint', 'main']
 
 
 class Entrypoint(object):
@@ -28,7 +34,7 @@ class Entrypoint(object):
     def __init__(self, args=[]):
         self._set_logguer()
         try:
-            self.config = Config()
+            self.config = Config(args)
         except Exception as err:
             self.log.error(err)
         if self.config.debug:
@@ -51,25 +57,42 @@ class Entrypoint(object):
         proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = proc.communicate()
 
-        self.log.info(out)
-        self.log.warning(err)
+        def dispout(output, cb):
+            enc = stdout.encoding or 'UTF-8'
+            output = output.decode(enc).split('\n')
+            for line in output:
+                cb(line)
+
+        if out:
+            dispout(out, self.log.info)
+        if err:
+            dispout(err, self.log.warning)
         if proc.returncode:
             raise Exception('Command exit code: {}'.format(proc.returncode))
 
+    def run_pre_conf_cmds(self):
+        for cmd in self.config.pre_conf_commands:
+            self.run_conf_cmd(cmd)
+
+    def run_post_conf_cmds(self):
+        for cmd in self.config.post_conf_commands:
+            self.run_conf_cmd(cmd)
+
     def launch(self):
-        self.args.pop(0)
-        command = Command(self.config, self.args)
-        command.run()
+        self.config.command.run()
+
+
+def main(argv):
+    argv.pop(0)
+    entry = Entrypoint(args=argv)
+    try:
+        entry.run_pre_conf_cmds()
+        entry.apply_conf()
+        entry.run_post_conf_cmds()
+        entry.launch()
+    except Exception as e:
+        entry.log.error(str(e))
 
 
 if __name__ == '__main__':
-    entry = Entrypoint(argv)
-    try:
-        for cmd in entry.config.pre_conf_commands:
-            entry.run_conf_cmd(cmd)
-        entry.apply_conf()
-        for cmd in entry.config.post_conf_commands:
-            entry.run_conf_cmd(cmd)
-        entry.launch()
-    except Exception as e:
-        print(e)
+    main(argv)

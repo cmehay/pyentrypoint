@@ -3,12 +3,17 @@
     DockerLinks a kiss class which help to get links info in a docker
     container.
 """
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import json
 import os
 import re
 
-from container import Container
-from links import Links
+from .container import Container
+from .links import Links
+
+__all__ = ['DockerLinks']
 
 
 class DockerLinks(object):

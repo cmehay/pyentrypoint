@@ -1,4 +1,7 @@
 "Command object"
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import fnmatch
 import os
 
@@ -35,8 +38,8 @@ class Command(object):
 
     def run(self):
         if os.getuid() is 0:
-            os.setuid(self.config.user)
             os.setgid(self.config.group)
+            os.setuid(self.config.user)
         if self.config.clean_env:
             self._clean_links_env()
         for item in self.config.secret_env:
@@ -44,6 +47,5 @@ class Command(object):
                 del(self.env[item])
         if not self.args or \
                 fnmatch.filter(self.config.subcommands, self.args[0]):
-            args = self.args if self.args else [self.command]
-            os.execvpe(self.command, args, os.environ)
-        os.execvpe(args[0], args, os.environ)
+            self.args.insert(0, self.command)
+        os.execvpe(self.args[0], self.args, os.environ)

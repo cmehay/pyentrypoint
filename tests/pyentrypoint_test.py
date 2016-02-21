@@ -1,10 +1,15 @@
 # Tests using pytest
-import fnmatch
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
-from docker_links import DockerLinks
-from entrypoint import Entrypoint
+import fnmatch
+from multiprocessing import Process
+
 from yaml import load
 from yaml import Loader
+
+from pyentrypoint import DockerLinks
+from pyentrypoint import Entrypoint
 
 LINKS = [
     'test1',
@@ -114,3 +119,36 @@ def test_templates():
     # test names
     for test_name in test_names:
         assert test_name in test['All names']
+
+
+def test_conf_commands():
+    entry = Entrypoint()
+
+    for cmd in entry.config.pre_conf_commands:
+        entry.run_conf_cmd(cmd)
+    for cmd in entry.config.post_conf_commands:
+        entry.run_conf_cmd(cmd)
+
+    with open('/tmp/OK') as f:
+        assert f.readline().startswith('TEST')
+
+    with open('/tmp/OKOK') as f:
+        assert f.readline().startswith('TEST2')
+
+    with open('/tmp/OKOKOK') as f:
+        assert f.readline().startswith('TEST3')
+
+
+def test_command():
+    run = [
+        (Process(target=Entrypoint(['OK']).launch), 'OK\n'),
+        (Process(target=Entrypoint(['echo', 'mdr']).launch), 'mdr\n'),
+        (Process(target=Entrypoint(['OK', 'mdr']).launch), 'OK mdr\n'),
+    ]
+    # capsys.readouterr()
+
+    for proc, test in run:
+        proc.start()
+        proc.join()
+        # out, _ = capsys.readouterr()
+        # assert out == test

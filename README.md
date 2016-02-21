@@ -1,157 +1,196 @@
-# py_docker_links
+# pyentrypoint
 
-py_docker_links is a kiss python module which helps to list
-linked containers inner containers.
+__pyentrypoint__ is a tool written in `Python` to manager Docker containers `ENTRYPOINT`.
 
-You can use it with `ENTRYPOINT` script to generate configuration.
+This tool avoids writing shell scripts to:
+ - Handle commands and sub commands
+ - Identify linked containers
+ - Generate configuration using `jinja2` templates
+ - Run commands before starting service
 
 
 ## Usages
 
-We have some containers described in `docker-compose.yml`
+### Install in container
+
+All you need to do is to setup a `yaml` file called `entrypoint-config.yml` and to install __pyentrypoint__ in your `Dockerfile` using pip.
+
+```dockerfile
+FROM        debian
+# Installing git for example
+RUN         apt-get update && apt-get install git -y
+# Install pyentrypoint
+RUN         pip install pyentrypoint
+# Copy config file in the current WORKDIR
+COPY        entrypoint-config.yml .
+# Set ENTRYPOINT
+ENTRYPOINT  ['pyentrypoint']
+# git will be the default command
+CMD         ['git']
+```
+
+### Setup entrypoint
+
+This is an example of `entrypoint-config.yml` file.
 
 ```yaml
-# Here some dummies containers
-test1:
-    image: busybox
-    command: sleep 30
-    expose:
-        - 800
-        - 8001/udp
-    environment:
-        FOO: bar
+# Entrypoint configuration example
 
-test2:
-    image: busybox
-    command: sleep 30
-    expose:
-        - 800/udp
-        - 8001
+# This entry should reflect CMD in Dockerfile
+command: git
 
-test3:
-    image: busybox
-    command: sleep 30
-    environment:
-        FOO: bar
+# This is a list with some subcommands to handle
+# when CMD is not `git` here.
+# By default, all args started with hyphen are handled.
+subcommands:
+    - "-*"
+    - clone
+    - init
+    - ls-files
+    # etc...
 
+# User and group to run the cmd.
+# Can be name or uid/gid.
+# Affect only command handled.
+# Dockerfile USER value by default.
+user: 1000
+group: 1000
 
-# Here our container that embed docker_links.py linked
-# with dummies containers
-dockerlinks:
-    build: .
-    dockerfile: Dockerfile.py3
-    command: python docker_links.py
-    links:
-        - test1
-        - test2
-        - test3
+# These files should exist (ADD or COPY)
+# and should be jinja templated.
+config_files:
+    - /etc/gitconfig
+    - .ssh/config
+    - .ssh/id_rsa
+
+# These environment variables will be wiped before
+# exec command to keep them secret
+# CAUTION: if the container is linked to another one,
+# theses variables will passed to it anyway
+secret_env:
+    - SSHKEY
+
+# Links are handled here
+# Port, name, protocol or env variable can be used to identify the links
+# Raise an error if the link could not be identified
+links:
+    'ssh':
+        port: 22
+        name: 'ssh*'
+        protocol: tcp
+        # env can be list, dictionary or string
+        env:
+            FOO: bar
+        # Single doesn't allow multiple links for this ID
+        # false by default
+        single: true
+        # Set to false to get optional link
+        # true by default
+        required: true
+
+# Commands to run before applying configuration
+pre_conf_commands:
+    - echo something > to_this_file
+
+# commands to run after applying configuration
+post_conf_commands:
+    - echo "something else" > to_this_another_file
+
+# Cleanup environment from variables created by linked containers
+# before running command (True by default)
+clean_env: True
+
+# Enable debug to debug
+debug: true
 ```
 
-Start them
+### Config templates
 
-```shell
-$ docker-compose build && docker-compose up dockerlinks
+You can generate configuration for your service with jinga2 template.
+
+Here an example for an hypothetical ssh config file:
+
+```jinga
+host server:
+    hostname {{links.ssh.ip}}
+    port {{links.ssh.port}}
 ```
 
-We should get formated json with informations about linked containers.
+Templates with be replaced with ip address and port of the identified link. All links can be accessed from `links.all`, this is a tuple of links you can iterate on it.
 
-```json
-{
-    "172.17.0.2": {
-        "environment": {
-            "FOO": "bar",
-            "affinity:container": "=a5601d5d225a3e57ea295c7646468067dd1859d4b2ee4574b5bf5542ed372e59"
-        },
-        "names": [
-            "d778f6ef9371",
-            "pythondockertools_test3_1",
-            "test3",
-            "test3_1"
-        ],
-        "ports": {}
-    },
-    "172.17.0.3": {
-        "environment": {
-            "affinity:container": "=78393f27c629fc426af5837a11d30720c8af7a5e029eb173b394f207e7e4701c"
-        },
-        "names": [
-            "5fc12cf7b49e",
-            "pythondockertools_test2_1",
-            "test2",
-            "test2_1"
-        ],
-        "ports": {
-            "800": {
-                "protocol": "tcp"
-            },
-            "8001": {
-                "protocol": "tcp"
-            }
-        }
-    },
-    "172.17.0.4": {
-        "environment": {
-            "FOO": "bar",
-            "affinity:container": "=6a31a66a1aafcd607763dcd916b81b4385a3baf4354c044345255c3eb0bce925"
-        },
-        "names": [
-            "d32fc2303721",
-            "pythondockertools_test1_1",
-            "test1",
-            "test1_1"
-        ],
-        "ports": {
-            "800": {
-                "protocol": "tcp"
-            },
-            "8001": {
-                "protocol": "udp"
-            }
-        }
-    }
-}
+```jinga
+{% for link in links.all %}
+host {{link.names[0]}}
+    hostname {{link.ip}}
+    port {{links.port}}
+{% endfor %}
 ```
 
-#### Using as module
+If you change the option `single` to `false` in the `entrypoint-config.yml`, the identified link `ssh` will become a tuple of links. You must iterate on it in the `jinja` template.
 
-```python
-from docker_links import DockerLinks
-
-links = DockerLinks()
-
-print(links.links())
-```
-You'll get a dictionary with all linked containers
-```python
-{'172.17.0.2': {'environment': {'affinity:container': '=6a31a66a1aafcd607763dcd916b81b4385a3baf4354c044345255c3eb0bce925', 'FOO': 'bar'}, 'ports': {'800': {'protocol': 'tcp'}, '8001': {'protocol': 'udp'}}, 'names': ['d32fc2303721', 'pythondockertools_test1_1', 'test1', 'test1_1']}, '172.17.0.3': {'environment': {'affinity:container': '=78393f27c629fc426af5837a11d30720c8af7a5e029eb173b394f207e7e4701c'}, 'ports': {'800': {'protocol': 'tcp'}, '8001': {'protocol': 'tcp'}}, 'names': ['5fc12cf7b49e', 'pythondockertools_test2_1', 'test2', 'test2_1']}, '172.17.0.5': {'environment': {'affinity:container': '=a5601d5d225a3e57ea295c7646468067dd1859d4b2ee4574b5bf5542ed372e59', 'FOO': 'bar'}, 'ports': {}, 'names': ['d778f6ef9371', 'pythondockertools_test3_1', 'test3', 'test3_1']}}
-
+```jinga
+{% for link in links.ssh %}
+host {{link.names[0]}}
+    hostname {{link.ip}}
+    port {{links.port}}
+{% endfor %}
 ```
 
----
-You call also get a pretty print json formating
+### Accessible object
 
-```python
-from docker_links import DockerLinks
+You have 4 available objects in your templates.
 
-links = DockerLinks()
+ - `config`
+ - `links`
+ - `containers`
+ - `environ`
 
-print(links.to_json())
-```
+#### config
 
-or filter links
+`Config` reflect the config file. You can retrieve any setup in this object.
 
-```python
-from docker_links import DockerLinks
+(see `config.py`)
 
-links = DockerLinks()
+#### links
 
-print(links.links('test1', 'test2')) # It also works with container uid
-```
+`Links` handles `Link` objects. You can identify links using globing patterns in the configuration file.
 
+`link` is related to one physical link (one ip and one port).
+
+`link` handles the following attributes:
+  - `ip`
+    - link ip
+  - `port`
+    - link port (integer)
+  - `environ`
+    - related container environment
+  - `protocol`
+    - link protocol (`tcp` or `udp`)
+  - `uri`
+    - link uri (example: `tcp://10.0.0.3:80`)
+  - `names`
+    - tuple of related container names
+
+#### containers
+`containers` handles a tuple of `container` object.
+
+`container` handles the following attributes:
+  - `ip`
+    - container ip
+  - `environ`
+    - container environment
+  - `names`
+    - List of containers names
+  - `links`
+    - Tuple of `link` object related to this container
+
+#### environ
+`environ` is the environment of the container (os.environ).
 
 ### Running Tests
 
-To run tests, ensure that docker-compose is installed and run
+To run tests, ensure that `docker-compose` and `make` are installed and run
 
 ```shell
-docker-compose build && docker-compose up testpython2 testpython3
+$ make test
+```

@@ -1,9 +1,14 @@
 """
     Link handle a single link to another container, determined by his port
 """
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import fnmatch
 
 from six import viewitems
+
+__all__ = ['Link', 'Links']
 
 
 class Link(object):
@@ -12,7 +17,7 @@ class Link(object):
 
     def __init__(self, ip, env, port, protocol, names):
         self.ip = ip
-        self.env = env
+        self.environ = env
         self.port = int(port)
         self.protocol = protocol
         self.uri = '{protocol}://{ip}:{port}'.format(
@@ -37,10 +42,10 @@ class Link(object):
     def _filter_env(self, env):
         "return true if env match"
         if isinstance(env, dict):
-            return viewitems(env) <= viewitems(self.env)
+            return viewitems(env) <= viewitems(self.environ)
         if isinstance(env, list):
-            return bool([key for key in env if key in self.env])
-        return str(env) in self.env
+            return bool([key for key in env if key in self.environ])
+        return str(env) in self.environ
 
 
 class Links(object):

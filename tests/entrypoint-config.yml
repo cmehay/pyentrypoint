@@ -23,3 +23,14 @@ links:
         env:
             FOO: bar
         required: true
+
+pre_conf_commands:
+    - echo TEST > /tmp/OK
+    - echo "INFO IS DISPLAYED"
+    - echo "WARNING IS DISPLAYED\nON TWO LINES" 1>&2
+
+post_conf_commands:
+    - echo TEST2 > /tmp/OKOK
+    - echo TEST3 > /tmp/OKOKOK
+    - echo "INFO IS DISPLAYED\nON TWO LINES"
+    - echo "WARNING IS DISPLAYED" 1>&2

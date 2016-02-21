@@ -19,15 +19,15 @@ All links 2:
 
 All environ:
 {% for link in links.all %}
-    {% for key in link.env %}
-    {{key}}: {{link.env[key]}}
+    {% for key in link.environ %}
+    {{key}}: {{link.environ[key]}}
     {% endfor %}
 {% endfor %}
 
 All links 2 environ:
 {% for link in links.test2 %}
-    {% for key in link.env %}
-    {{key}}: {{link.env[key]}}
+    {% for key in link.environ %}
+    {{key}}: {{link.environ[key]}}
     {% endfor %}
 {% endfor %}
 

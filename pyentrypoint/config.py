@@ -1,25 +1,35 @@
 """
-    Configuration
+    Configuration object
 """
+from __future__ import absolute_import
+from __future__ import unicode_literals
+
 import os
 from grp import getgrnam
 from io import open
 from pwd import getpwnam
 
-from command import Command
-from docker_links import DockerLinks
-from links import Links
 from six import string_types
 from yaml import load
 from yaml import Loader
 
+from .command import Command
+from .docker_links import DockerLinks
+from .links import Links
+
+__all__ = ['Config']
+
 
 class Config(object):
 
-    """Get entrypoint config"""
+    """
+    Get entrypoint config
 
-    # Config file should always be in WORKDIR and named
-    # entrypoint-config.yml
+    Parse entrypoint-config.yml
+
+    Config file should always be in WORKDIR and named entrypoint-config.yml
+    """
+
     _config_file = 'entrypoint-config.yml'
 
     def _return_item_lst(self, item):
@@ -36,12 +46,8 @@ class Config(object):
         self._links = None
         if not os.path.isfile(self._config_file):
             return
-        try:
-            with open(self._config_file) as f:
-                self._config = load(stream=f, Loader=Loader)
-        except Exception as err:
-            # TODO: logger
-            print(err)
+        with open(self._config_file) as f:
+            self._config = load(stream=f, Loader=Loader)
         self._args = args
 
     @property
@@ -110,14 +116,12 @@ class Config(object):
     @property
     def pre_conf_commands(self):
         """Return list of preconf commands"""
-        if 'pre_conf_commands' in self._config:
-            return self._return_item_lst(self._config['pre_conf_command'])
+        return self._return_item_lst('pre_conf_commands')
 
     @property
     def post_conf_commands(self):
         """Return list of postconf commands"""
-        if 'post_conf_commands' in self._config:
-            return self._return_item_lst(self._config['post_conf_command'])
+        return self._return_item_lst('post_conf_commands')
 
     @property
     def clean_env(self):
