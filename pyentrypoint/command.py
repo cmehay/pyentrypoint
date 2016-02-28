@@ -2,8 +2,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import fnmatch
 import os
+from fnmatch import fnmatch
 
 
 class Command(object):
@@ -27,7 +27,7 @@ class Command(object):
                     '{}_ENV_*'.format(link),
                 ]
                 for patt in patterns:
-                    if fnmatch.fnmatch(link, patt):
+                    if fnmatch(link, patt):
                         return True
             return False
 
@@ -45,7 +45,8 @@ class Command(object):
         for item in self.config.secret_env:
             if item in os.environ:
                 del(self.env[item])
+        subcom = self.config.subcommands
         if not self.args or \
-                fnmatch.filter(self.config.subcommands, self.args[0]):
+                [p for p in subcom if fnmatch(self.args[0], p)]:
             self.args.insert(0, self.command)
         os.execvpe(self.args[0], self.args, os.environ)

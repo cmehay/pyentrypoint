@@ -1,7 +1,4 @@
-command: echo
-
-subcommands:
-    - OK
+command: bash
 
 user: 1000
 group: 1000

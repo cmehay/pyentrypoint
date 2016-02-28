@@ -141,14 +141,15 @@ def test_conf_commands():
 
 def test_command():
     run = [
-        (Process(target=Entrypoint(['OK']).launch), 'OK\n'),
-        (Process(target=Entrypoint(['echo', 'mdr']).launch), 'mdr\n'),
-        (Process(target=Entrypoint(['OK', 'mdr']).launch), 'OK mdr\n'),
+        #  ((Process instance), (file to check))
+        (Process(target=Entrypoint(
+            ['-c', 'echo OK > /tmp/CMD']).launch), '/tmp/CMD'),
+        (Process(target=Entrypoint(
+            ['bash', '-c', 'echo OK > /tmp/CMD2']).launch), '/tmp/CMD2'),
     ]
-    # capsys.readouterr()
 
     for proc, test in run:
         proc.start()
         proc.join()
-        # out, _ = capsys.readouterr()
-        # assert out == test
+        with open(test) as f:
+            assert f.readline().startswith('OK')
