@@ -18,7 +18,7 @@ All you need to do is to setup a `yaml` file called `entrypoint-config.yml` and 
 ```dockerfile
 FROM        debian
 # Installing git for example
-RUN         apt-get update && apt-get install git -y
+RUN         apt-get update && apt-get install git python-pip -y
 # Install pyentrypoint
 RUN         pip install pyentrypoint
 # Copy config file in the current WORKDIR
