@@ -78,7 +78,7 @@ class Config(object):
         if 'user' in self._config:
             if isinstance(self._config['user'], int):
                 return self._config['user']
-            return getpwnam(name=self._config['user']).pw_uid
+            return getpwnam(self._config['user']).pw_uid
         return os.getuid()
 
     @property
@@ -87,7 +87,7 @@ class Config(object):
         if 'group' in self._config:
             if isinstance(self._config['user'], int):
                 return self._config['user']
-            return getgrnam(name=self._config['user']).pw_gid
+            return getgrnam(self._config['user']).pw_gid
         return os.getgid()
 
     @property
