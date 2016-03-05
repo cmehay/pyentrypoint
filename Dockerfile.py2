@@ -4,13 +4,12 @@ FROM python:2
 
 RUN pip install pytest twiggy six pyyaml jinja2
 
-ENV PYTHONPATH /opt/pyentrypoint/
-
-ADD pyentrypoint /opt/pyentrypoint/
-ADD tests /opt/
+ENV PYTHONPATH /opt/
 
 ADD tests/test_template.yml.tpl /tmp/test_template.yml
 
-WORKDIR /opt/
+WORKDIR /opt/tests
+
+ENV SECRET nothing
 
 CMD ["py.test", "-s", "."]

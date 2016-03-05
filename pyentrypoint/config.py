@@ -14,6 +14,7 @@ from yaml import load
 from yaml import Loader
 
 from .command import Command
+from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .links import Links
 
@@ -30,8 +31,6 @@ class Config(object):
     Config file should always be in WORKDIR and named entrypoint-config.yml
     """
 
-    _config_file = 'entrypoint-config.yml'
-
     def _return_item_lst(self, item):
         """Return item as a list"""
         if item in self._config:
@@ -40,10 +39,11 @@ class Config(object):
             return self._config[item]
         return []
 
-    def __init__(self, args=[]):
+    def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._config = {}
         self._args = []
         self._links = None
+        self._config_file = conf
         if not os.path.isfile(self._config_file):
             return
         with open(self._config_file) as f:

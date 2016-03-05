@@ -7,7 +7,7 @@ config_files:
     - /tmp/test_template.yml
 
 secret_env:
-    - SSHKEY
+    - SECRET
 
 links:
     test1:

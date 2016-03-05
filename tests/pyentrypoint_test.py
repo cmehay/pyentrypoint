@@ -68,7 +68,7 @@ def test_ports():
 
 
 def test_entrypoint_links():
-    entry = Entrypoint()
+    entry = Entrypoint(conf='configs/base.yml')
     links = entry.config.links
 
     assert len(links.all) == 4
@@ -85,12 +85,20 @@ def test_containers():
     assert len(ctns) == 4
 
     for ctn in ctns:
-        if 'test1' in ctn.names or 'test3' in ctn.names:
+        if 'test1' in ctn.names:
             assert ctn.environ['FOO'] == 'bar'
+            assert len(ctn.links) == 2
+        if 'test2' in ctn.names:
+            assert len(ctn.links) == 2
+        if 'test3' in ctn.names:
+            assert ctn.environ['FOO'] == 'bar'
+            assert len(ctn.links) == 0
+        if 'test4' in ctn.names:
+            assert len(ctn.links) == 0
 
 
 def test_templates():
-    entry = Entrypoint()
+    entry = Entrypoint(conf='configs/base.yml')
 
     conf = entry.config
 
@@ -122,7 +130,7 @@ def test_templates():
 
 
 def test_conf_commands():
-    entry = Entrypoint()
+    entry = Entrypoint(conf='configs/base.yml')
 
     for cmd in entry.config.pre_conf_commands:
         entry.run_conf_cmd(cmd)
@@ -143,9 +151,12 @@ def test_command():
     run = [
         #  ((Process instance), (file to check))
         (Process(target=Entrypoint(
-            ['-c', 'echo OK > /tmp/CMD']).launch), '/tmp/CMD'),
+            conf='configs/base.yml',
+            args=['-c', 'echo OK > /tmp/CMD']).launch), '/tmp/CMD'),
         (Process(target=Entrypoint(
-            ['bash', '-c', 'echo OK > /tmp/CMD2']).launch), '/tmp/CMD2'),
+            conf='configs/base.yml',
+            args=['bash', '-c', 'echo ${SECRET}OK > /tmp/CMD2']).launch),
+            '/tmp/CMD2'),
     ]
 
     for proc, test in run:

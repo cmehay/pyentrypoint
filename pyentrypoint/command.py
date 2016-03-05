@@ -49,4 +49,4 @@ class Command(object):
         if not self.args or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
             self.args.insert(0, self.command)
-        os.execvpe(self.args[0], self.args, os.environ)
+        os.execvpe(self.args[0], self.args, self.env)

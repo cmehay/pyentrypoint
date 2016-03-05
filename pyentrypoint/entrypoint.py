@@ -18,6 +18,7 @@ from twiggy import log
 from twiggy import quickSetup
 
 from .config import Config
+from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 
 __all__ = ['Entrypoint', 'main']
@@ -31,10 +32,10 @@ class Entrypoint(object):
         quickSetup(min_level=levels.INFO)
         self.log = log.name('entrypoint')
 
-    def __init__(self, args=[]):
+    def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._set_logguer()
         try:
-            self.config = Config(args)
+            self.config = Config(conf=conf, args=args)
         except Exception as err:
             self.log.error(err)
         if self.config.debug:
