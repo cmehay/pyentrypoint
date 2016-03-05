@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import fnmatch
+import os
 from multiprocessing import Process
 
 from yaml import load
@@ -149,18 +150,25 @@ def test_conf_commands():
 
 def test_command():
     run = [
-        #  ((Process instance), (file to check))
+        #  ((Process instance), (file to check), (uid), (gid))
         (Process(target=Entrypoint(
             conf='configs/base.yml',
-            args=['-c', 'echo OK > /tmp/CMD']).launch), '/tmp/CMD'),
+            args=['-c', 'echo OK > /tmp/CMD']).launch),
+            '/tmp/CMD', 1000, 1000),
         (Process(target=Entrypoint(
             conf='configs/base.yml',
             args=['bash', '-c', 'echo ${SECRET}OK > /tmp/CMD2']).launch),
-            '/tmp/CMD2'),
+            '/tmp/CMD2', 1000, 1000),
+        (Process(target=Entrypoint(
+            conf='configs/usernames.yml',
+            args=['bash', '-c', 'echo OK > /tmp/CMD3']).launch),
+            '/tmp/CMD3', 33, 33),
     ]
 
-    for proc, test in run:
+    for proc, test, uid, gid in run:
         proc.start()
         proc.join()
         with open(test) as f:
             assert f.readline().startswith('OK')
+        assert os.stat(test).st_uid == uid
+        assert os.stat(test).st_gid == gid

@@ -9,7 +9,7 @@ setup(
 
     name='pyentrypoint',
 
-    version='0.1.12',
+    version='0.1.13',
 
     packages=find_packages(),
 

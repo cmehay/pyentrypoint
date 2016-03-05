@@ -1,0 +1,4 @@
+command: bash
+
+user: www-data
+group: www-data

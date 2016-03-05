@@ -87,7 +87,7 @@ class Config(object):
         if 'group' in self._config:
             if isinstance(self._config['user'], int):
                 return self._config['user']
-            return getgrnam(self._config['user']).pw_gid
+            return getgrnam(self._config['user']).gr_gid
         return os.getgid()
 
     @property
