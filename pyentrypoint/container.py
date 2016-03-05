@@ -9,14 +9,16 @@ class Container(object):
 
     """Container handles a single container link"""
 
-    def __init__(self, ip, env, names, links=[]):
+    def __init__(self, ip, env, names, links=None):
         self.ip = ip
         self.environ = env
         self.names = names
-        self.links = self._set_links(links)
+        self._set_links(links)
 
     def _set_links(self, links):
         lst = []
+        if not links:
+            self.links = tuple()
         for link in links:
             if link.ip == self.ip:
                 lst.append(link)
