@@ -51,14 +51,14 @@ class Entrypoint(object):
         for template in self.config.config_files:
             temp = env.get_template(template)
             with open(template, mode='w') as f:
-                self.log.info('Applying conf to {}'.format(template))
+                self.log.debug('Applying conf to {}'.format(template))
                 f.write(temp.render(config=self.config,
                                     links=self.config.links,
                                     env=os.environ,
                                     containers=DockerLinks().to_containers()))
 
     def run_conf_cmd(self, cmd):
-        self.log.info('run command: {}'.format(cmd))
+        self.log.debug('run command: {}'.format(cmd))
         proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
         out, err = proc.communicate()
 
