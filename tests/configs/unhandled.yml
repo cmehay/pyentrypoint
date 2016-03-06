@@ -1,0 +1,12 @@
+command: cat
+
+user: 1000
+group: 1000
+
+
+pre_conf_commands:
+    - echo NOPE > /tmp/CMD4
+
+
+post_conf_commands:
+    - echo NOPE >> /tmp/CMD4

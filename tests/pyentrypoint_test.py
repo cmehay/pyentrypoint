@@ -163,6 +163,10 @@ def test_command():
             conf='configs/usernames.yml',
             args=['bash', '-c', 'echo OK > /tmp/CMD3']).launch),
             '/tmp/CMD3', 33, 33),
+        (Process(target=Entrypoint(
+            conf='configs/unhandled.yml',
+            args=['bash', '-c', 'echo OK > /tmp/CMD4']).launch),
+            '/tmp/CMD4', 0, 0),
     ]
 
     for proc, test, uid, gid in run:

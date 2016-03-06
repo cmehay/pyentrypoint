@@ -36,7 +36,17 @@ class Command(object):
         self.env = {env: val for env, val in os.environ.items()
                     if not is_link_env(env, all_link_names)}
 
+    @property
+    def is_handled(self):
+        subcom = self.config.subcommands
+        if not self.args or self.args[0] == self.command or \
+                [p for p in subcom if fnmatch(self.args[0], p)]:
+            return True
+        return False
+
     def run(self):
+        if not self.is_handled:
+            os.execvpe(self.args[0], self.args, self.env)
         if os.getuid() is 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)

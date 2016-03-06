@@ -42,6 +42,10 @@ class Entrypoint(object):
             quickSetup(min_level=levels.DEBUG)
         self.args = args
 
+    @property
+    def is_handled(self):
+        return self.config.command.is_handled
+
     def apply_conf(self):
         env = Environment(loader=FileSystemLoader('/'))
         for template in self.config.config_files:
@@ -87,6 +91,8 @@ def main(argv):
     argv.pop(0)
     entry = Entrypoint(args=argv)
     try:
+        if not entry.is_handled:
+            entry.launch()
         entry.run_pre_conf_cmds()
         entry.apply_conf()
         entry.run_post_conf_cmds()
