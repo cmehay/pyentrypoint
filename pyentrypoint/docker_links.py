@@ -74,7 +74,7 @@ class DockerLinks(object):
             names.sort(key=len)
             hexa.sort()
             item["names"] = names
-            item["id"] = hexa
+            item["id"] = hexa[0] if len(hexa) else ''
 
     def links(self, *args):
         "Return dictionnary of links in container"
@@ -103,7 +103,7 @@ class DockerLinks(object):
             ctn.append(Container(ip=ip,
                                  env=item['environment'],
                                  names=item['names'],
-                                 id=item['id'][0],
+                                 id=item['id'],
                                  links=links))
         self._containers = tuple(ctn)
         return self._containers

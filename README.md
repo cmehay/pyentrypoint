@@ -183,7 +183,7 @@ You have 4 available objects in your templates.
     - List of containers names
       - Names are sorted by length, but container ID will be the last element.
   - `id`
-    - Hexadecimal container ID
+    - Hexadecimal container ID (if available, else empty string)
   - `links`
     - Tuple of `link` object related to this container
 
