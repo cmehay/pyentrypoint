@@ -36,7 +36,6 @@ class DockerLinks(object):
 
     def _get_links(self):
         self.all_links = {}
-        # nb_args = len(args)
         # Read hosts file
         with open('/etc/hosts') as hosts:
             for line in hosts:
@@ -48,8 +47,6 @@ class DockerLinks(object):
                 link_name_env = split[1].upper().replace('-', '_')
                 link_names = split[1:]
                 env_var = "{link_name}_NAME".format(link_name=link_name_env)
-                # if nb_args and link_name not in args:
-                #     continue
                 # Check if ip is already in dict
                 if link_ip in self.all_links:
                     names = self.all_links[link_ip]["names"]
@@ -64,8 +61,19 @@ class DockerLinks(object):
                     }
 
     def _sort_names(self):
+
+        def test_split(name):
+            "Select key found in env"
+            return bool([key for key in os.environ
+                         if key.startswith(name.upper().replace('-', '_'))])
+
         for _, item in self.all_links.items():
-            item["names"].sort()
+            names = [name for name in item["names"] if test_split(name)]
+            hexa = [name for name in item["names"] if not test_split(name)]
+
+            names.sort()
+            hexa.sort()
+            item["names"] = names + hexa
 
     def links(self, *args):
         "Return dictionnary of links in container"

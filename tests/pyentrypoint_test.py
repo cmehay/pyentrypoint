@@ -97,6 +97,9 @@ def test_containers():
         if 'test4' in ctn.names:
             assert len(ctn.links) == 0
 
+        # Test sorted names
+        int(ctn.names[-1], base=16)
+
 
 def test_templates():
     entry = Entrypoint(conf='configs/base.yml')
