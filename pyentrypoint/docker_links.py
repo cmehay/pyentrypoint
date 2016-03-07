@@ -61,7 +61,7 @@ class DockerLinks(object):
                     }
 
     def _sort_names(self):
-
+        "Sort names by len and put hexa at the end of list"
         def test_split(name):
             "Select key found in env"
             return bool([key for key in os.environ
@@ -71,7 +71,7 @@ class DockerLinks(object):
             names = [name for name in item["names"] if test_split(name)]
             hexa = [name for name in item["names"] if not test_split(name)]
 
-            names.sort()
+            names.sort(key=len)
             hexa.sort()
             item["names"] = names + hexa
 

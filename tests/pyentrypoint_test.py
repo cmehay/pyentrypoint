@@ -99,6 +99,7 @@ def test_containers():
 
         # Test sorted names
         int(ctn.names[-1], base=16)
+        assert len(ctn.names[0]) <= len(ctn.names[1])
 
 
 def test_templates():

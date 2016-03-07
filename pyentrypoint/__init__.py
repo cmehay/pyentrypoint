@@ -4,5 +4,3 @@ from __future__ import unicode_literals
 from .constants import *
 from .docker_links import DockerLinks
 from .entrypoint import Entrypoint
-
-__version__ = '0.1.1'
