@@ -51,7 +51,7 @@ class Config(object):
         self._args = args
 
     @property
-    def as_config(self):
+    def has_config(self):
         "Has config file provided."
         return len(self._config) is not 0
 

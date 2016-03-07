@@ -34,6 +34,8 @@ class Entrypoint(object):
 
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._set_logguer()
+        if 'ENTRYPOINT_CONFIG' in os.environ:
+            conf = os.environ['ENTRYPOINT_CONFIG']
         try:
             self.config = Config(conf=conf, args=args)
         except Exception as err:

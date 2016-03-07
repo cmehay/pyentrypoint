@@ -181,11 +181,20 @@ You have 4 available objects in your templates.
     - container environment
   - `names`
     - List of containers names
+      - Names are sorted by length, but container ID will be the last element.
+  - `id`
+    - Hexadecimal container ID
   - `links`
     - Tuple of `link` object related to this container
 
 #### environ
 `environ` is the environment of the container (os.environ).
+
+## Setup
+
+Some setups can be overridden using environment variables.
+
+`ENTRYPOINT-CONFIG` overrides `entrypoint-config.yml` file.
 
 ### Running Tests
 

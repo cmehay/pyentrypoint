@@ -37,3 +37,8 @@ All names:
     - {{name}}
     {% endfor %}
 {% endfor %}
+
+ID:
+{% for container in containers %}
+    - {{container.id}}
+{% endfor %}

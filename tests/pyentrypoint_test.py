@@ -98,7 +98,7 @@ def test_containers():
             assert len(ctn.links) == 0
 
         # Test sorted names
-        int(ctn.names[-1], base=16)
+        int(ctn.id, base=16)
         assert len(ctn.names[0]) <= len(ctn.names[1])
 
 
@@ -132,6 +132,10 @@ def test_templates():
     # test names
     for test_name in test_names:
         assert test_name in test['All names']
+
+    # test id
+    for id in test['ID']:
+        int(id, base=16)
 
 
 def test_conf_commands():
@@ -180,3 +184,12 @@ def test_command():
             assert f.readline().startswith('OK')
         assert os.stat(test).st_uid == uid
         assert os.stat(test).st_gid == gid
+
+
+def test_config_file():
+    os.environ['ENTRYPOINT_CONFIG'] = 'configs/base.yml'
+    entry = Entrypoint()
+
+    assert entry.config.has_config
+
+    del os.environ['ENTRYPOINT_CONFIG']

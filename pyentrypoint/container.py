@@ -9,10 +9,11 @@ class Container(object):
 
     """Container handles a single container link"""
 
-    def __init__(self, ip, env, names, links=None):
+    def __init__(self, ip, env, names, id, links=None):
         self.ip = ip
         self.environ = env
         self.names = names
+        self.id = id
         self._set_links(links)
 
     def _set_links(self, links):
