@@ -13,13 +13,11 @@ from sys import stdout
 
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
-from twiggy import levels
-from twiggy import log
-from twiggy import quickSetup
 
 from .config import Config
 from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
+from .logs import Logs
 
 __all__ = ['Entrypoint', 'main']
 
@@ -29,8 +27,7 @@ class Entrypoint(object):
     """Entrypoint class."""
 
     def _set_logguer(self):
-        quickSetup(min_level=levels.INFO)
-        self.log = log.name('entrypoint')
+        self.log = Logs().log
 
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._set_logguer()
@@ -41,7 +38,7 @@ class Entrypoint(object):
         except Exception as err:
             self.log.error(err)
         if self.config.debug:
-            quickSetup(min_level=levels.DEBUG)
+            Logs.set_debug()
         self.args = args
 
     @property

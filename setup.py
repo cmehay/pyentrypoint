@@ -9,7 +9,7 @@ setup(
 
     name='pyentrypoint',
 
-    version='0.1.18',
+    version='0.2.1',
 
     packages=find_packages(),
 
@@ -23,7 +23,7 @@ setup(
 
     install_requires=['Jinja2>=2.8',
                       'PyYAML>=3.11',
-                      'Twiggy>=0.4.7',
+                      'colorlog>=2.6.1',
                       'argparse>=1.4.0',
                       'six>=1.10.0'],
 
