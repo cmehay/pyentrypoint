@@ -29,6 +29,9 @@ ENTRYPOINT  ['pyentrypoint']
 CMD         ['git']
 ```
 
+### Working examples
+ - [Tor hidden service](https://github.com/cmehay/docker-tor-hidden-service)
+
 ### Setup entrypoint
 
 This is an example of `entrypoint-config.yml` file.
@@ -194,7 +197,7 @@ You have 4 available objects in your templates.
 
 Some setups can be overridden using environment variables.
 
-`ENTRYPOINT-CONFIG` overrides `entrypoint-config.yml` file.
+`ENTRYPOINT_CONFIG` overrides `entrypoint-config.yml` file.
 
 ### Running Tests
 
