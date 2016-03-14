@@ -2,7 +2,7 @@
 
 FROM python:3
 
-RUN pip3 install pytest twiggy six pyyaml jinja2
+RUN pip3 install pytest six pyyaml jinja2 colorlog
 
 ENV PYTHONPATH /opt/
 
