@@ -29,6 +29,20 @@ ENTRYPOINT  ['pyentrypoint']
 CMD         ['git']
 ```
 
+```dockerfile
+FROM        alpine
+# Installing git for example
+RUN         apk add --update py-pip git
+# Install pyentrypoint
+RUN         pip install pyentrypoint
+# Copy config file in the current WORKDIR
+COPY        entrypoint-config.yml .
+# Set ENTRYPOINT
+ENTRYPOINT  ['pyentrypoint']
+# git will be the default command
+CMD         ['git']
+```
+
 ### Working examples
  - [Tor hidden service](https://github.com/cmehay/docker-tor-hidden-service)
 
@@ -139,6 +153,14 @@ host {{link.names[0]}}
 {% endfor %}
 ```
 
+Accessing environment in template.
+
+```jinga
+{% if 'SSHKEY in env' %}
+{{env['SSHKEY']}}
+{% endfor %}
+```
+
 ### Accessible object
 
 You have 4 available objects in your templates.
@@ -191,7 +213,7 @@ You have 4 available objects in your templates.
     - Tuple of `link` object related to this container
 
 #### environ
-`environ` is the environment of the container (os.environ).
+`env` is the environment of the container (os.environ).
 
 ## Setup
 
