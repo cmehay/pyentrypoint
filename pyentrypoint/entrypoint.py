@@ -65,7 +65,11 @@ class Entrypoint(object):
         def dispout(output, cb):
             enc = stdout.encoding or 'UTF-8'
             output = output.decode(enc).split('\n')
-            for line in output:
+            l = len(output)
+            for c, line in enumerate(output):
+                if c + 1 == l and not len(line):
+                    # Do not display last empty line
+                    break
                 cb(line)
 
         if out:
