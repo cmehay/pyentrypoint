@@ -54,6 +54,7 @@ class Entrypoint(object):
                 f.write(temp.render(config=self.config,
                                     links=self.config.links,
                                     env=os.environ,
+                                    environ=os.environ,
                                     containers=DockerLinks().to_containers()))
 
     def run_conf_cmd(self, cmd):

@@ -168,7 +168,7 @@ You have 4 available objects in your templates.
  - `config`
  - `links`
  - `containers`
- - `environ`
+ - `env`
 
 #### config
 
@@ -213,7 +213,10 @@ You have 4 available objects in your templates.
     - Tuple of `link` object related to this container
 
 #### environ
-`env` is the environment of the container (os.environ).
+`environ` is the environment of the container (os.environ).
+
+`env` is an alias to `environ`.
+
 
 ## Setup
 

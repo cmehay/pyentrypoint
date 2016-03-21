@@ -137,6 +137,10 @@ def test_templates():
     for id in test['ID']:
         int(id, base=16)
 
+    # test env
+    assert test['ENV']['SECRET'] == 'nothing'
+    assert test['ENVIRON']['SECRET'] == 'nothing'
+
 
 def test_conf_commands():
     entry = Entrypoint(conf='configs/base.yml')

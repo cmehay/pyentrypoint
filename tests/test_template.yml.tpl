@@ -42,3 +42,13 @@ ID:
 {% for container in containers %}
     - {{container.id}}
 {% endfor %}
+
+ENV:
+{% for e in env %}
+    {{e}}: {{env[e]}}
+{% endfor %}
+
+ENVIRON:
+{% for e in environ %}
+    {{e}}: {{env[e]}}
+{% endfor %}
