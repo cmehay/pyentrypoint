@@ -1,6 +1,6 @@
 # pyentrypoint
 
-__pyentrypoint__ is a tool written in `Python` to manager Docker containers `ENTRYPOINT`.
+__pyentrypoint__ is a tool written in `Python` to manage Docker containers `ENTRYPOINT`.
 
 This tool avoids writing shell scripts to:
  - Handle commands and sub commands
@@ -125,7 +125,7 @@ debug: true
 
 You can generate configuration for your service with jinga2 template.
 
-Here an example for an hypothetical ssh config file:
+Here is an example for an hypothetical ssh config file:
 
 ```jinga
 host server:
@@ -133,7 +133,7 @@ host server:
     port {{links.ssh.port}}
 ```
 
-Templates with be replaced with ip address and port of the identified link. All links can be accessed from `links.all`, this is a tuple of links you can iterate on it.
+Templates will be replaced with ip address and port of the identified link. All links can be accessed from `links.all`, this is a tuple of links you can iterate on it.
 
 ```jinga
 {% for link in links.all %}
@@ -161,14 +161,14 @@ Accessing environment in template.
 {% endfor %}
 ```
 
-### Accessible object
+### Accessible objects
 
 You have 4 available objects in your templates.
 
  - `config`
  - `links`
  - `containers`
- - `env`
+ - `environ`
 
 #### config
 
@@ -178,7 +178,7 @@ You have 4 available objects in your templates.
 
 #### links
 
-`Links` handles `Link` objects. You can identify links using globing patterns in the configuration file.
+`Links` handles `Link` objects. You can identify links using wildcard patterns in the configuration file.
 
 `link` is related to one physical link (one ip and one port).
 
@@ -192,7 +192,7 @@ You have 4 available objects in your templates.
   - `protocol`
     - link protocol (`tcp` or `udp`)
   - `uri`
-    - link uri (example: `tcp://10.0.0.3:80`)
+    - link URI (example: `tcp://10.0.0.3:80`)
   - `names`
     - tuple of related container names
 
@@ -208,9 +208,9 @@ You have 4 available objects in your templates.
     - List of containers names
       - Names are sorted by length, but container ID will be the last element.
   - `id`
-    - Hexadecimal container ID (if available, else empty string)
+    - Hexadecimal container ID (if available, empty string else)
   - `links`
-    - Tuple of `link` object related to this container
+    - Tuple of `link` objects related to this container
 
 #### environ
 `environ` is the environment of the container (os.environ).
@@ -222,7 +222,7 @@ You have 4 available objects in your templates.
 
 Some setups can be overridden using environment variables.
 
-`ENTRYPOINT_CONFIG` overrides `entrypoint-config.yml` file.
+- `ENTRYPOINT_CONFIG` overrides `entrypoint-config.yml` file.
 
 ### Running Tests
 
