@@ -17,6 +17,7 @@ from .command import Command
 from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .links import Links
+from .logs import Logs
 
 __all__ = ['Config']
 
@@ -41,14 +42,15 @@ class Config(object):
 
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._config = {}
-        self._args = []
+        self.log = Logs().log
+        self._args = args
         self._links = None
         self._config_file = conf
         if not os.path.isfile(self._config_file):
+            self.log.critical('Entrypoint config file does not provided')
             return
         with open(self._config_file) as f:
             self._config = load(stream=f, Loader=Loader)
-        self._args = args
 
     @property
     def has_config(self):

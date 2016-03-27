@@ -182,6 +182,10 @@ def test_command():
             conf='configs/unhandled.yml',
             args=['bash', '-c', 'echo OK > /tmp/CMD4']).launch),
             '/tmp/CMD4', 0, 0),
+        (Process(target=Entrypoint(
+            conf='/dontexit',
+            args=['bash', '-c', 'echo OK > /tmp/CMD5']).launch),
+            '/tmp/CMD5', 0, 0),
     ]
 
     for proc, test, uid, gid in run:
