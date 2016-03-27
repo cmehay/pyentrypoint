@@ -49,6 +49,8 @@ class Entrypoint(object):
         env = Environment(loader=FileSystemLoader('/'))
         for template in self.config.config_files:
             temp = env.get_template(template)
+            if template.endswith('.tpl'):
+                template = template[:-4]
             with open(template, mode='w') as f:
                 self.log.debug('Applying conf to {}'.format(template))
                 f.write(temp.render(config=self.config,

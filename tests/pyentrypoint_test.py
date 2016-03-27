@@ -109,37 +109,40 @@ def test_templates():
 
     entry.apply_conf()
 
-    with open(conf.config_files[0], mode='r') as r:
-        test = load(stream=r, Loader=Loader)
+    for config_file in conf.config_files:
+        if config_file.endswith('.tpl'):
+            config_file = config_file[:-4]
+        with open(conf.config_files[0], mode='r') as r:
+            test = load(stream=r, Loader=Loader)
 
-    assert len(set(test['All links'])) == 4
-    assert len(set(test['All links 1'])) == 2
-    assert len(set(test['All links 2'])) == 2
+        assert len(set(test['All links'])) == 4
+        assert len(set(test['All links 1'])) == 2
+        assert len(set(test['All links 2'])) == 2
 
-    assert fnmatch.fnmatch(test['Links 2 800'][0], 'udp://*:800')
+        assert fnmatch.fnmatch(test['Links 2 800'][0], 'udp://*:800')
 
-    # test environment
-    assert test['All environ']['FOO'] == 'bar'
-    assert test['All links 2 environ']['FOO'] == 'bar'
+        # test environment
+        assert test['All environ']['FOO'] == 'bar'
+        assert test['All links 2 environ']['FOO'] == 'bar'
 
-    test_names = [
-        'test1',
-        'test2',
-        'test3',
-        'test4',
-    ]
+        test_names = [
+            'test1',
+            'test2',
+            'test3',
+            'test4',
+        ]
 
-    # test names
-    for test_name in test_names:
-        assert test_name in test['All names']
+        # test names
+        for test_name in test_names:
+            assert test_name in test['All names']
 
-    # test id
-    for id in test['ID']:
-        int(id, base=16)
+        # test id
+        for id in test['ID']:
+            int(id, base=16)
 
-    # test env
-    assert test['ENV']['SECRET'] == 'nothing'
-    assert test['ENVIRON']['SECRET'] == 'nothing'
+        # test env
+        assert test['ENV']['SECRET'] == 'nothing'
+        assert test['ENVIRON']['SECRET'] == 'nothing'
 
 
 def test_conf_commands():

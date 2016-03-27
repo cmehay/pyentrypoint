@@ -75,9 +75,10 @@ group: 1000
 
 # These files should exist (ADD or COPY)
 # and should be jinja templated.
+# Note: if config files end with ".tpl", the extension will be removed.
 config_files:
     - /etc/gitconfig
-    - .ssh/config
+    - .ssh/config.tpl # Will apply to ".ssh/config"
     - .ssh/id_rsa
 
 # These environment variables will be wiped before
@@ -222,7 +223,7 @@ You have 4 available objects in your templates.
 
 Some setups can be overridden using environment variables.
 
-- `ENTRYPOINT_CONFIG` overrides `entrypoint-config.yml` file.
+- `ENTRYPOINT_CONFIG` overrides path of `entrypoint-config.yml` file.
 
 ### Running Tests
 
