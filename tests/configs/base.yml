@@ -6,6 +6,7 @@ group: 1000
 config_files:
     - /tmp/test_template.yml
     - /tmp/test_template2.yml.tpl
+    - /tmp/test_template2.yml.tpl: /tmp/test_template3.yml
 
 secret_env:
     - SECRET

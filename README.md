@@ -79,7 +79,8 @@ group: 1000
 config_files:
     - /etc/gitconfig
     - .ssh/config.tpl # Will apply to ".ssh/config"
-    - .ssh/id_rsa
+    - /tmp/id_rsa: .ssh/id_rsa # Will apply "/tmp/id_rsa" template to ".ssh/id_rsa"
+
 
 # These environment variables will be wiped before
 # exec command to keep them secret

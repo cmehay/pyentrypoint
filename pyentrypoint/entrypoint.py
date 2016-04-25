@@ -43,16 +43,16 @@ class Entrypoint(object):
 
     @property
     def is_handled(self):
+        """Is command handled by entrypoint"""
         return self.config.command.is_handled
 
     def apply_conf(self):
+        """Apply config to template files"""
         env = Environment(loader=FileSystemLoader('/'))
-        for template in self.config.config_files:
+        for template, conf_file in self.config.get_templates():
             temp = env.get_template(template)
-            if template.endswith('.tpl'):
-                template = template[:-4]
-            with open(template, mode='w') as f:
-                self.log.debug('Applying conf to {}'.format(template))
+            with open(conf_file, mode='w') as f:
+                self.log.debug('Applying conf to {}'.format(conf_file))
                 f.write(temp.render(config=self.config,
                                     links=self.config.links,
                                     env=os.environ,

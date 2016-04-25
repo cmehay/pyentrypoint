@@ -40,6 +40,21 @@ class Config(object):
             return self._config[item]
         return []
 
+    def get_templates(self):
+        """Returns iterator of tuple (template, config_file)"""
+        config_files = self.config_files
+        if isinstance(config_files, list):
+            for item in config_files:
+                if isinstance(item, string_types):
+                    template = item
+                    outfile = item[:-4] if item.endswith('.tpl') else item
+                if isinstance(item, dict):
+                    template = list(item.keys())[0]
+                    outfile = item[template]
+                yield (template, outfile)
+        if isinstance(config_files, dict):
+            raise Exception("config_files setup missformated.")
+
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._config = {}
         self.log = Logs().log
