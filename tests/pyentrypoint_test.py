@@ -204,3 +204,12 @@ def test_config_file():
     assert entry.config.has_config
 
     del os.environ['ENTRYPOINT_CONFIG']
+
+
+def test_force_config():
+    os.environ['ENTRYPOINT_FORCE'] = 'True'
+    entry = Entrypoint()
+
+    assert entry.should_config
+
+    del os.environ['ENTRYPOINT_FORCE']

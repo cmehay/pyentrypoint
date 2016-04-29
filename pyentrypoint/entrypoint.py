@@ -46,6 +46,11 @@ class Entrypoint(object):
         """Is command handled by entrypoint"""
         return self.config.command.is_handled
 
+    @property
+    def should_config(self):
+        """Check environment to tell if config should apply anyway"""
+        return 'ENTRYPOINT_FORCE' in os.environ
+
     def apply_conf(self):
         """Apply config to template files"""
         env = Environment(loader=FileSystemLoader('/'))
@@ -97,7 +102,7 @@ def main(argv):
     argv.pop(0)
     entry = Entrypoint(args=argv)
     try:
-        if not entry.is_handled:
+        if not entry.is_handled and not entry.should_config:
             entry.launch()
         entry.run_pre_conf_cmds()
         entry.apply_conf()
