@@ -8,6 +8,7 @@ This tool avoids writing shell scripts to:
  - Generate configuration using `jinja2` templates
  - Run commands before starting service
 
+[![Documentation Status](https://readthedocs.org/projects/pyentrypoint/badge/?version=latest)](http://pyentrypoint.readthedocs.io/en/latest/?badge=latest)
 
 ## Usages
 
