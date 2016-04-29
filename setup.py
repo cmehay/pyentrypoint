@@ -5,52 +5,55 @@ from setuptools import setup
 
 # Thanks Sam and Max
 
-setup(
+__version__ = '0.3.1'
 
-    name='pyentrypoint',
+if __name__ == '__main__':
+    setup(
 
-    version='0.3.0',
+        name='pyentrypoint',
 
-    packages=find_packages(),
+        version=__version__,
 
-    author="Christophe Mehay",
+        packages=find_packages(),
 
-    author_email="cmehay@nospam.student.42.fr",
+        author="Christophe Mehay",
 
-    description="pyentrypoint manages entrypoints in Docker containers.",
+        author_email="cmehay@nospam.student.42.fr",
 
-    long_description=open('README.md').read(),
+        description="pyentrypoint manages entrypoints in Docker containers.",
 
-    install_requires=['Jinja2>=2.8',
-                      'PyYAML>=3.11',
-                      'colorlog>=2.6.1',
-                      'argparse>=1.4.0',
-                      'six>=1.10.0'],
+        long_description=open('README.md').read(),
 
-    include_package_data=True,
+        install_requires=['Jinja2>=2.8',
+                          'PyYAML>=3.11',
+                          'colorlog>=2.6.1',
+                          'argparse>=1.4.0',
+                          'six>=1.10.0'],
 
-    url='http://github.com/cmehay/pyentrypoint',
+        include_package_data=True,
 
-    classifiers=[
-        "Programming Language :: Python",
-        "Development Status :: 1 - Planning",
-        "License :: OSI Approved :: BSD License",
-        "Natural Language :: English",
-        "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
-        "Topic :: System :: Installation/Setup",
-    ],
+        url='http://github.com/cmehay/pyentrypoint',
 
-
-    entry_points={
-        'console_scripts': [
-            'pyentrypoint = pyentrypoint.__main__:main',
+        classifiers=[
+            "Programming Language :: Python",
+            "Development Status :: 1 - Planning",
+            "License :: OSI Approved :: BSD License",
+            "Natural Language :: English",
+            "Operating System :: POSIX :: Linux",
+            "Programming Language :: Python :: 2",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.5",
+            "Topic :: System :: Installation/Setup",
         ],
-    },
 
-    license="WTFPL",
 
-)
+        entry_points={
+            'console_scripts': [
+                'pyentrypoint = pyentrypoint.__main__:main',
+            ],
+        },
+
+        license="WTFPL",
+
+    )
