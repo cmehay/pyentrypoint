@@ -3,6 +3,7 @@
     Smart docker-entrypoint
 """
 from __future__ import absolute_import
+from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
@@ -51,6 +52,11 @@ class Entrypoint(object):
         """Check environment to tell if config should apply anyway"""
         return 'ENTRYPOINT_FORCE' in os.environ
 
+    @property
+    def raw_output(self):
+        """Check if command output should be displayed using logging or not"""
+        return 'ENTRYPOINT_RAW' in os.environ
+
     def apply_conf(self):
         """Apply config to template files"""
         env = Environment(loader=FileSystemLoader('/'))
@@ -80,9 +86,11 @@ class Entrypoint(object):
                 cb(line)
 
         if out:
-            dispout(out, self.log.info)
+            display_cb = self.log.info if not self.raw_output else print
+            dispout(out, display_cb)
         if err:
-            dispout(err, self.log.warning)
+            display_cb = self.log.warning if not self.raw_output else print
+            dispout(err, display_cb)
         if proc.returncode:
             raise Exception('Command exit code: {}'.format(proc.returncode))
 

@@ -72,10 +72,22 @@ class Logs(object):
     def set_debug(cls):
         """Set log level to debug"""
         cls.lvl = logging.DEBUG
-        cls.log.setLevel(logging.DEBUG)
+        cls.log.setLevel(cls.lvl)
 
     @classmethod
     def set_info(cls):
         """Set log level to info"""
         cls.lvl = logging.INFO
-        cls.log.setLevel(logging.INFO)
+        cls.log.setLevel(cls.lvl)
+
+    @classmethod
+    def set_warning(cls):
+        """Set log level to info"""
+        cls.lvl = logging.WARNING
+        cls.log.setLevel(cls.lvl)
+
+    @classmethod
+    def set_critical(cls):
+        """Set log level to info"""
+        cls.lvl = logging.CRITICAL
+        cls.log.setLevel(cls.lvl)

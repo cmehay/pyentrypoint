@@ -199,7 +199,7 @@ def test_command():
 
 def test_config_file():
     os.environ['ENTRYPOINT_CONFIG'] = 'configs/base.yml'
-    entry = Entrypoint()
+    entry = Entrypoint(conf='configs/base.yml')
 
     assert entry.config.has_config
 
@@ -208,8 +208,17 @@ def test_config_file():
 
 def test_force_config():
     os.environ['ENTRYPOINT_FORCE'] = 'True'
-    entry = Entrypoint()
+    entry = Entrypoint(conf='configs/base.yml')
 
     assert entry.should_config
 
     del os.environ['ENTRYPOINT_FORCE']
+
+
+def test_display_raw():
+    os.environ['ENTRYPOINT_RAW'] = 'True'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.raw_output
+
+    del os.environ['ENTRYPOINT_RAW']
