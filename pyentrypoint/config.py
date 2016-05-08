@@ -150,6 +150,8 @@ class Config(object):
     @property
     def debug(self):
         """Enable debug logs."""
+        if 'ENTRYPOINT_DEBUG' in os.environ:
+            return True
         if 'debug' in self._config:
             return bool(self._config['debug'])
         return False

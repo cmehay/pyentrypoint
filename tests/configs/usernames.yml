@@ -2,3 +2,5 @@ command: bash
 
 user: www-data
 group: www-data
+
+debug: true

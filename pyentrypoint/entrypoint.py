@@ -10,6 +10,7 @@ import os
 from subprocess import PIPE
 from subprocess import Popen
 from sys import argv
+from sys import exit
 from sys import stdout
 
 from jinja2 import Environment
@@ -38,8 +39,11 @@ class Entrypoint(object):
             self.config = Config(conf=conf, args=args)
         except Exception as err:
             self.log.error(err)
-        if self.config.debug:
-            Logs.set_debug()
+            self.log.critical('Fail to initialize config, exiting now')
+            exit(1)
+        else:
+            if self.config.debug:
+                Logs.set_debug()
         self.args = args
 
     @property
