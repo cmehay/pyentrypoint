@@ -5,6 +5,8 @@ from __future__ import unicode_literals
 import os
 from fnmatch import fnmatch
 
+from .logs import Logs
+
 
 class Command(object):
     """This object handle command in dockerfile"""
@@ -14,6 +16,11 @@ class Command(object):
         self.args = args
         self.command = command
         self.env = os.environ
+        self.log = Logs().log
+        self.log.debug('Handled command is: {cmd}'.format(cmd=self.command))
+        self.log.debug('Arguments are: "{args}"'.format(
+            args='" "'.join(self.args)
+        ))
 
     def _clean_links_env(self):
         # TODO: that Looks too much complicated
@@ -41,12 +48,20 @@ class Command(object):
         subcom = self.config.subcommands
         if not self.args or self.args[0] == self.command or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
+            self.log.debug("Command is handled")
             return True
+        self.log.debug("Command is not handled")
         return False
+
+    def _exec(self):
+        self.log.debug('Now running: "{args}"'.format(
+            args='" "'.join(self.args)
+        ))
+        os.execvpe(self.args[0], self.args, self.env)
 
     def run(self):
         if not self.is_handled:
-            os.execvpe(self.args[0], self.args, self.env)
+            self._exec()
         if os.getuid() is 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)
@@ -59,4 +74,4 @@ class Command(object):
         if not self.args or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
             self.args.insert(0, self.command)
-        os.execvpe(self.args[0], self.args, self.env)
+        self._exec()

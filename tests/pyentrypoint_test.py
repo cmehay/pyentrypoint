@@ -183,7 +183,7 @@ def test_command():
             args=['bash', '-c', 'echo OK > /tmp/CMD4']).launch),
             '/tmp/CMD4', 0, 0),
         (Process(target=Entrypoint(
-            conf='/dontexit',
+            conf='/dontexist',
             args=['bash', '-c', 'echo OK > /tmp/CMD5']).launch),
             '/tmp/CMD5', 0, 0),
     ]
@@ -207,18 +207,20 @@ def test_config_file():
 
 
 def test_force_config():
-    os.environ['ENTRYPOINT_FORCE'] = 'True'
     entry = Entrypoint(conf='configs/base.yml')
+    assert not entry.should_config
 
+    os.environ['ENTRYPOINT_FORCE'] = 'True'
     assert entry.should_config
 
     del os.environ['ENTRYPOINT_FORCE']
 
 
 def test_display_raw():
-    os.environ['ENTRYPOINT_RAW'] = 'True'
     entry = Entrypoint(conf='configs/base.yml')
+    assert not entry.raw_output
 
+    os.environ['ENTRYPOINT_RAW'] = 'True'
     assert entry.raw_output
 
     del os.environ['ENTRYPOINT_RAW']

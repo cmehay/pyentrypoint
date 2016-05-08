@@ -10,3 +10,5 @@ pre_conf_commands:
 
 post_conf_commands:
     - echo NOPE >> /tmp/CMD4
+
+debug: true

@@ -13,4 +13,4 @@ WORKDIR /opt/tests
 
 ENV SECRET nothing
 
-CMD ["py.test", "--verbose", "-s", "."]
+CMD ["py.test", "--verbose", "-rw", "."]

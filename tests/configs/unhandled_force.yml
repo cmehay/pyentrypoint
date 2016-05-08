@@ -1,0 +1,9 @@
+command: cat
+
+user: 1000
+group: 1000
+
+pre_conf_commands:
+    - echo OK > /tmp/CMD_FORCE
+
+debug: true

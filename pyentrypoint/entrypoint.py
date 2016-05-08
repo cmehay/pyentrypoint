@@ -111,7 +111,9 @@ def main(argv):
     entry = Entrypoint(args=argv)
     try:
         if not entry.is_handled and not entry.should_config:
+            entry.log.warning("Running command without config")
             entry.launch()
+        entry.log.debug("Starting config")
         entry.run_pre_conf_cmds()
         entry.apply_conf()
         entry.run_post_conf_cmds()

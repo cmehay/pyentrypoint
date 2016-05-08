@@ -33,3 +33,5 @@ post_conf_commands:
     - echo TEST3 > /tmp/OKOKOK
     - echo "INFO IS DISPLAYED\nON TWO LINES"
     - echo "WARNING IS DISPLAYED" 1>&2
+
+debug: true

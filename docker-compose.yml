@@ -1,7 +1,6 @@
 testpython3:
     build: .
     dockerfile: Dockerfile.py3
-    #command: python3 docker_links.py
     links:
         - test1
         - test2
@@ -14,7 +13,32 @@ testpython3:
 testpython2:
     build: .
     dockerfile: Dockerfile.py2
-    #command: python docker_links.py
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
+
+testpython3_debug:
+    build: .
+    dockerfile: Dockerfile.py3
+    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
+
+testpython2_debug:
+    build: .
+    dockerfile: Dockerfile.py2
+    command: ["py.test", "--verbose", "-s", "-rw", "."]
     links:
         - test1
         - test2
