@@ -148,10 +148,11 @@ def test_templates():
 def test_conf_commands():
     entry = Entrypoint(conf='configs/base.yml')
 
-    for cmd in entry.config.pre_conf_commands:
-        entry.run_conf_cmd(cmd)
-    for cmd in entry.config.post_conf_commands:
-        entry.run_conf_cmd(cmd)
+    os.environ['ENTRYPOINT_PRECONF_COMMAND'] = 'echo TEST4 > /tmp/OKOKOKOK'
+    os.environ['ENTRYPOINT_POSTCONF_COMMAND'] = 'echo TEST5 > /tmp/OKOKOKOKOK'
+
+    entry.run_pre_conf_cmds()
+    entry.run_post_conf_cmds()
 
     with open('/tmp/OK') as f:
         assert f.readline().startswith('TEST')
@@ -161,6 +162,12 @@ def test_conf_commands():
 
     with open('/tmp/OKOKOK') as f:
         assert f.readline().startswith('TEST3')
+
+    with open('/tmp/OKOKOKOK') as f:
+        assert f.readline().startswith('TEST4')
+
+    with open('/tmp/OKOKOKOKOK') as f:
+        assert f.readline().startswith('TEST5')
 
 
 def test_command():

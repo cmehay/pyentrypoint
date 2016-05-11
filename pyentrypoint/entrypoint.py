@@ -101,10 +101,14 @@ class Entrypoint(object):
     def run_pre_conf_cmds(self):
         for cmd in self.config.pre_conf_commands:
             self.run_conf_cmd(cmd)
+        if 'ENTRYPOINT_PRECONF_COMMAND' in os.environ:
+            self.run_conf_cmd(os.environ['ENTRYPOINT_PRECONF_COMMAND'])
 
     def run_post_conf_cmds(self):
         for cmd in self.config.post_conf_commands:
             self.run_conf_cmd(cmd)
+        if 'ENTRYPOINT_POSTCONF_COMMAND' in os.environ:
+            self.run_conf_cmd(os.environ['ENTRYPOINT_POSTCONF_COMMAND'])
 
     def launch(self):
         self.config.command.run()
