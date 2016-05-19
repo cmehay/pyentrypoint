@@ -60,6 +60,7 @@ class Config(object):
         self.log = Logs().log
         self._args = args
         self._links = None
+        self._command = None
         self._config_file = conf
         if not os.path.isfile(self._config_file):
             self.log.critical('Entrypoint config file does not provided')
@@ -75,11 +76,14 @@ class Config(object):
     @property
     def command(self):
         "Main command to run."
+        if self._command:
+            return self._command
         cmd = self._args[0] if self._args else ''
         for key in ['command', 'cmd']:
             if key in self._config:
                 cmd = self._config[key]
-        return Command(cmd, self, self._args)
+        self._command = Command(cmd, self, self._args)
+        return self._command
 
     @property
     def subcommands(self):
