@@ -22,15 +22,7 @@ from .logs import Logs
 __all__ = ['Config']
 
 
-class Config(object):
-
-    """
-    Get entrypoint config
-
-    Parse entrypoint-config.yml
-
-    Config file should always be in WORKDIR and named entrypoint-config.yml
-    """
+class ConfigMeta(object):
 
     def _return_item_lst(self, item):
         """Return item as a list"""
@@ -55,6 +47,24 @@ class Config(object):
         if isinstance(config_files, dict):
             raise Exception("config_files setup missformated.")
 
+    def _check_config(self):
+        for key in self._config:
+            if not hasattr(Config, key) or key == '__init__':
+                self.log.warning(
+                    '"{key}" is not a valid option'.format(key=key)
+                )
+
+
+class Config(ConfigMeta):
+
+    """
+    Get entrypoint config
+
+    Parse entrypoint-config.yml
+
+    Config file should always be in WORKDIR and named entrypoint-config.yml
+    """
+
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._config = {}
         self.log = Logs().log
@@ -67,6 +77,7 @@ class Config(object):
             return
         with open(self._config_file) as f:
             self._config = load(stream=f, Loader=Loader)
+        self._check_config()
 
     @property
     def has_config(self):

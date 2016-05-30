@@ -1,0 +1,39 @@
+command: bash
+
+user: 1000
+group: 1000
+
+config_files:
+    - /tmp/test_template.yml
+    - /tmp/test_template2.yml.tpl
+    - /tmp/test_template2.yml.tpl: /tmp/test_template3.yml
+
+secret_env:
+    - SECRET
+
+links:
+    test1:
+        name: test1
+    test2_800:
+        port: 800
+        protocol: udp
+        single: true
+    test2:
+        env:
+            FOO: bar
+        required: true
+
+# Error
+preconf_commands:
+    - echo TEST > /tmp/OK
+    - echo "INFO IS DISPLAYED"
+    - echo "WARNING IS DISPLAYED\nON TWO LINES" 1>&2
+
+# error
+postconf_commands:
+    - echo TEST2 > /tmp/OKOK
+    - echo TEST3 > /tmp/OKOKOK
+    - echo "INFO IS DISPLAYED\nON TWO LINES"
+    - echo "WARNING IS DISPLAYED" 1>&2
+
+debug: true

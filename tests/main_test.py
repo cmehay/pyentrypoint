@@ -76,6 +76,14 @@ def test_main():
             '/tmp/CMD11',
             0,
             0,
+        ), (
+            Process(target=ProxyMain(
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD12'],
+                env={'ENTRYPOINT_CONFIG': 'configs/base_with_errors.yml'}
+            ).run),
+            '/tmp/CMD12',
+            1000,
+            1000,
         )
     ]
 
