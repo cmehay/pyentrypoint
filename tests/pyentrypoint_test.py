@@ -202,6 +202,8 @@ def test_command():
             assert f.readline().startswith('OK')
         assert os.stat(test).st_uid == uid
         assert os.stat(test).st_gid == gid
+        assert not os.path.isfile('/.dockerenv')
+        assert not os.path.isfile('/.dockerinit')
 
 
 def test_config_file():

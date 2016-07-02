@@ -22,6 +22,14 @@ class Command(object):
             args='" "'.join(self.args)
         ))
 
+    def _rm_dockerenv(self):
+        """Delete '/.dockerenv' and '/.dockerinit' files"""
+        files = ['/.dockerenv', '/.dockerinit']
+        for f in files:
+            if os.path.isfile(f):
+                self.log.debug('Removing {file} file'.format(file=f))
+                os.unlink(f)
+
     def _clean_links_env(self):
         # TODO: that Looks too much complicated
         all_link_names = []
@@ -62,6 +70,7 @@ class Command(object):
     def run(self):
         if not self.is_handled:
             self._exec()
+        self._rm_dockerenv()
         if os.getuid() is 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)
