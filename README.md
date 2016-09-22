@@ -89,6 +89,7 @@ config_files:
 # theses variables will passed to it anyway
 secret_env:
     - SSHKEY
+    - '*' # Support globbing, all environment will be wiped
 
 # Links are handled here
 # Port, name, protocol or env variable can be used to identify the links

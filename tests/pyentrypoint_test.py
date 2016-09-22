@@ -193,12 +193,16 @@ def test_command():
             conf='/dontexist',
             args=['bash', '-c', 'echo OK > /tmp/CMD5']).launch),
             '/tmp/CMD5', 0, 0),
+        (Process(target=Entrypoint(
+            conf='configs/secret_env.yml',
+            args=['bash', '-c', 'echo ${SECRET}OK > /tmp/CMD6']).launch),
+            '/tmp/CMD6', 0, 0),
     ]
 
     for proc, test, uid, gid in run:
         proc.start()
         proc.join()
-        with open(test) as f:
+        with open(test, 'r') as f:
             assert f.readline().startswith('OK')
         assert os.stat(test).st_uid == uid
         assert os.stat(test).st_gid == gid
