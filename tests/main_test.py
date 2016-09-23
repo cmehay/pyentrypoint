@@ -26,10 +26,10 @@ def test_main():
         #  ((Process instance), (file to check), (uid), (gid))
         (
             Process(target=ProxyMain(
-                args=['pyentrypoint', '-c', 'echo OK > /tmp/CMD6'],
+                args=['pyentrypoint', '-c', 'echo OK > /tmp/CMD__6'],
                 env={'ENTRYPOINT_CONFIG': 'configs/base.yml'}
             ).run),
-            '/tmp/CMD6',
+            '/tmp/CMD__6',
             1000,
             1000,
         ), (
@@ -37,31 +37,31 @@ def test_main():
                 args=['pyentrypoint',
                       'bash',
                       '-c',
-                      'echo ${SECRET}OK > /tmp/CMD7'],
+                      'echo ${SECRET}OK > /tmp/CMD__7'],
                 env={'ENTRYPOINT_CONFIG': 'configs/base.yml'}
             ).run),
-            '/tmp/CMD7',
+            '/tmp/CMD__7',
             1000,
             1000,
         ), (
             Process(target=ProxyMain(
-                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD8'],
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__8'],
                 env={'ENTRYPOINT_CONFIG': 'configs/usernames.yml'}
             ).run),
-            '/tmp/CMD8',
+            '/tmp/CMD__8',
             33,
             33,
         ), (
             Process(target=ProxyMain(
-                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD9'],
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__9'],
                 env={'ENTRYPOINT_CONFIG': 'configs/unhandled.yml'}
             ).run),
-            '/tmp/CMD9',
+            '/tmp/CMD__9',
             0,
             0,
         ), (
             Process(target=ProxyMain(
-                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD10'],
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__10'],
                 env={'ENTRYPOINT_CONFIG': 'configs/unhandled_force.yml',
                      'ENTRYPOINT_FORCE': 'true'}
             ).run),
@@ -70,18 +70,18 @@ def test_main():
             0,
         ), (
             Process(target=ProxyMain(
-                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD11'],
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__11'],
                 env={'ENTRYPOINT_CONFIG': '/dontexist'}
             ).run),
-            '/tmp/CMD11',
+            '/tmp/CMD__11',
             0,
             0,
         ), (
             Process(target=ProxyMain(
-                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD12'],
+                args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__12'],
                 env={'ENTRYPOINT_CONFIG': 'configs/base_with_errors.yml'}
             ).run),
-            '/tmp/CMD12',
+            '/tmp/CMD__12',
             1000,
             1000,
         )

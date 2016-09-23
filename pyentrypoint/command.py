@@ -37,12 +37,12 @@ class Command(object):
         def is_link_env(env, links):
             for link in links:
                 patterns = [
-                    '{}_NAME'.format(link),
-                    '{}_PORT_*'.format(link),
-                    '{}_ENV_*'.format(link),
+                    '{}_NAME'.format(link.upper()),
+                    '{}_PORT_*'.format(link.upper()),
+                    '{}_ENV_*'.format(link.upper()),
                 ]
                 for patt in patterns:
-                    if fnmatch(link, patt):
+                    if fnmatch(env, patt):
                         return True
             return False
 
@@ -50,6 +50,20 @@ class Command(object):
             all_link_names.extend(link.names)
         self.env = {env: val for env, val in os.environ.items()
                     if not is_link_env(env, all_link_names)}
+
+    def _clean_secret_env(self):
+        to_del = []
+        for key in self.env:
+            for item in self.config.secret_env:
+                if fnmatch(key, item):
+                    self.log.debug("Secret env '{item}' match '{key}'".format(
+                        item=item,
+                        key=key,
+                    ))
+                    to_del.append(key)
+
+        for item in to_del:
+            del(self.env[item])
 
     @property
     def is_handled(self):
@@ -74,11 +88,13 @@ class Command(object):
         if os.getuid() is 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)
+            self.log.debug('Set uid {uid} and gid {gid}'.format(
+                uid=self.config.user,
+                gid=self.config.group,
+            ))
         if self.config.clean_env:
             self._clean_links_env()
-        for item in self.config.secret_env:
-            if item in os.environ:
-                del(self.env[item])
+        self._clean_secret_env()
         subcom = self.config.subcommands
         if not self.args or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
