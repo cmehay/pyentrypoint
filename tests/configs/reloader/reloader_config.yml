@@ -1,0 +1,10 @@
+config_files:
+    - /tmp/test_template2.yml.tpl: /tmp/reload
+
+reload:
+    watch_config_files: false
+    files:
+        - /tmp/reload_custom
+
+pre_conf_commands:
+    - touch /tmp/reload_custom

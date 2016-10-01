@@ -56,7 +56,7 @@ class Links(object):
     _def_options = {'single': False,
                     'required': True}
 
-    def __init__(self, config=None, links=None):
+    def __init__(self, config={}, links=None):
         if not links or len(links.links()) is 0:
             pass
 
@@ -72,7 +72,7 @@ class Links(object):
         self._conf = config
 
     def _get_link(self, name):
-        config = self._conf[name]
+        config = self._conf.get(name, {})
         links = self._links
         options = dict(self._def_options)
         for key, val in config.items():

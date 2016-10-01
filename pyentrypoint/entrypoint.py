@@ -44,6 +44,8 @@ class Entrypoint(object):
         else:
             if self.config.debug:
                 Logs.set_debug()
+            if self.config.quiet:
+                Logs.set_critical()
         self.args = args
 
     @property

@@ -2,7 +2,7 @@
 
 FROM python:2
 
-RUN pip install pytest six pyyaml jinja2 colorlog
+RUN pip install pytest six pyyaml jinja2 colorlog watchdog pytest-mock
 
 ENV PYTHONPATH /opt/
 

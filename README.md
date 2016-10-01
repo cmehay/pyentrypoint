@@ -117,12 +117,26 @@ pre_conf_commands:
 post_conf_commands:
     - echo "something else" > to_this_another_file
 
+# Reload service when configuration change by sending a signal to process
+reload:
+    signal: SIGHUP # Optional, signal to send, default is SIGHUP
+    pid: 1 # Optional, pid to send signal, default is 1
+    watch_config_files: true # Optional, watch defined config files, default True
+    files: # Optional, list of files to watch
+        - /etc/conf/to/watch
+# can also be enabled like this:
+reload: true
+
+
 # Cleanup environment from variables created by linked containers
 # before running command (True by default)
-clean_env: True
+clean_env: true
 
 # Enable debug to debug
 debug: true
+
+# Do not output anything except error
+quiet: false
 ```
 
 ### Config templates

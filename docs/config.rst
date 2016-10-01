@@ -35,13 +35,13 @@ This is an example of ``entrypoint-config.yml`` file.
         - .ssh/config.tpl # Will apply to ".ssh/config"
         - /tmp/id_rsa: .ssh/id_rsa # Will apply "/tmp/id_rsa" template to ".ssh/id_rsa"
 
-
     # These environment variables will be wiped before
     # exec command to keep them secret
     # CAUTION: if the container is linked to another one,
     # theses variables will passed to it anyway
     secret_env:
         - SSHKEY
+        - '*' # Support globbing, all environment will be wiped
 
     # Links are handled here
     # Port, name, protocol or env variable can be used to identify the links
@@ -51,7 +51,7 @@ This is an example of ``entrypoint-config.yml`` file.
             port: 22
             name: 'ssh*'
             protocol: tcp
-            # env can be list, dictionary or string
+            # env can be list, dict or string
             env:
                 FOO: bar
             # Single doesn't allow multiple links for this ID
@@ -69,12 +69,25 @@ This is an example of ``entrypoint-config.yml`` file.
     post_conf_commands:
         - echo "something else" > to_this_another_file
 
+    # Reload service when configuration change by sending a signal to process
+    reload:
+        signal: SIGHUP # Optional, signal to send, default is SIGHUP
+        watch_config_files: true # Optional, watch defined config files, default True
+        files: # Optional, list of files to watch
+            - /etc/conf/to/watch
+    # can also be enabled with a boolean:
+    reload: true
+
     # Cleanup environment from variables created by linked containers
     # before running command (True by default)
-    clean_env: True
+    clean_env: true
 
     # Enable debug to debug
     debug: true
+
+    # Do not output anything except error
+    quiet: false
+
 
 yaml references
 ~~~~~~~~~~~~~~~
@@ -209,6 +222,23 @@ List of shell commands to run after applying configuration
     post_conf_commands:
         - echo "something else" > to_this_another_file
 
+reload
+^^^^^^
+
+Send SIGHUP to PID 1 to reload service when configuration change
+
+Accept boolean or dictionary
+
+.. code:: yaml
+
+    reload:
+        signal: SIGHUP # Optional, signal to send, default is SIGHUP
+        watch_config_files: true # Optional, watch defined config files, default True
+        files: # Optional, list of files to watch
+            - /etc/conf/to/watch
+    # can also be enabled with a boolean:
+    reload: true
+
 clean_env
 ^^^^^^^^^
 
@@ -219,3 +249,8 @@ debug
 ^^^^^
 
 Print some debug.
+
+quiet
+^^^^^
+
+Do not output anything except error

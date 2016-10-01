@@ -1,0 +1,4 @@
+config_files:
+    - /tmp/test_template2.yml.tpl: /tmp/reload
+
+reload: true

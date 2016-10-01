@@ -82,12 +82,12 @@ class Logs(object):
 
     @classmethod
     def set_warning(cls):
-        """Set log level to info"""
+        """Set log level to warning"""
         cls.lvl = logging.WARNING
         cls.log.setLevel(cls.lvl)
 
     @classmethod
     def set_critical(cls):
-        """Set log level to info"""
+        """Set log level to critical"""
         cls.lvl = logging.CRITICAL
         cls.log.setLevel(cls.lvl)
