@@ -18,6 +18,7 @@ from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .links import Links
 from .logs import Logs
+from .reloader import Reloader
 
 __all__ = ['Config']
 
@@ -44,8 +45,24 @@ class ConfigMeta(object):
                     template = list(item.keys())[0]
                     outfile = item[template]
                 yield (template, outfile)
-        if isinstance(config_files, dict):
+        else:
             raise Exception("config_files setup missformated.")
+
+    def get_reloader(self):
+        """Setup and get reloader"""
+        config_files = [file[1] for file in self.get_templates()]
+        reload = self._config['reload']
+        if isinstance(reload, bool):
+            return Reloader(files=config_files)
+        if isinstance(reload, dict):
+            signal = reload.get('signal', 'SIGHUP')
+            watch_config_files = bool(reload.get('watch_config_files'))
+            files = reload.get('files', [])
+            if not isinstance(files, list):
+                raise Exception('Reload files is not a list')
+            if watch_config_files:
+                files.extend(config_files)
+            return Reloader(files=files, sig=signal)
 
     def _check_config(self):
         for key in self._config:
@@ -71,6 +88,7 @@ class Config(ConfigMeta):
         self._args = args
         self._links = None
         self._command = None
+        self._reload = None
         self._config_file = conf
         if not os.path.isfile(self._config_file):
             self.log.critical('Entrypoint config file does not provided')
@@ -156,6 +174,16 @@ class Config(ConfigMeta):
         return self._return_item_lst('post_conf_commands')
 
     @property
+    def reload(self):
+        """Return Reloader object if reload is set"""
+        if self._reload:
+            return self._reload
+        if not self._config.get('reload'):
+            return None
+        self._reload = self.get_reloader()
+        return self._reload
+
+    @property
     def clean_env(self):
         """Clean env from linked containers before running command"""
         if 'clean_env' in self._config:
@@ -170,3 +198,12 @@ class Config(ConfigMeta):
         if 'debug' in self._config:
             return bool(self._config['debug'])
         return False
+
+    @property
+    def quiet(self):
+        """Disable logging"""
+        if self.debug:
+            return False
+        if 'ENTRYPOINT_QUIET' in os.environ:
+            return True
+        return bool(self._config.get('quiet', False))

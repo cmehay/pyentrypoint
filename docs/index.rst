@@ -16,6 +16,7 @@ This tool avoids writing shell scripts to:
 - Auto configure container using `jinja2` templates
 - Run commands before starting service
 - Clean environment before running service
+- Reload service when configuration has changed
 - Increase security by setuid/setgid service
 
 Contents:

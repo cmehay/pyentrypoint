@@ -81,6 +81,11 @@ class Command(object):
         ))
         os.execvpe(self.args[0], self.args, self.env)
 
+    def _run_reloader(self):
+        if self.config.reload:
+            self.log.debug('Launching reloader process')
+            self.config.reload.run_in_process()
+
     def run(self):
         if not self.is_handled:
             self._exec()
@@ -99,4 +104,5 @@ class Command(object):
         if not self.args or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
             self.args.insert(0, self.command)
+        self._run_reloader()
         self._exec()
