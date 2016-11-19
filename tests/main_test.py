@@ -49,8 +49,8 @@ def test_main():
                 env={'ENTRYPOINT_CONFIG': 'configs/usernames.yml'}
             ).run),
             '/tmp/CMD__8',
-            33,
-            33,
+            1009,
+            1010,
         ), (
             Process(target=ProxyMain(
                 args=['pyentrypoint', 'bash', '-c', 'echo OK > /tmp/CMD__9'],

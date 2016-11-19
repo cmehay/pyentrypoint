@@ -10,6 +10,8 @@ except ImportError:
     # Python3
     from unittest import mock
 
+import os
+
 from pyentrypoint import Entrypoint
 
 import subprocess
@@ -21,6 +23,9 @@ from time import sleep
 
 def test_reloader():
 
+    if 'ENTRYPOINT_DISABLE_RELOAD' in os.environ:
+        os.environ.pop('ENTRYPOINT_DISABLE_RELOAD')
+
     with mock.patch('os.kill') as os_kill:
         entry = Entrypoint(conf='configs/reloader/reloader.yml')
         entry.apply_conf()
@@ -31,7 +36,21 @@ def test_reloader():
         os_kill.assert_called_once_with(1, SIGHUP)
 
 
+def test_disabled_reloader():
+
+    os.environ['ENTRYPOINT_DISABLE_RELOAD'] = 'true'
+
+    with mock.patch('os.kill') as os_kill:
+        entry = Entrypoint(conf='configs/reloader/reloader.yml')
+        entry.apply_conf()
+        assert entry.config.reload is None
+        assert not os_kill.called
+
+
 def test_reloader_custom():
+
+    if 'ENTRYPOINT_DISABLE_RELOAD' in os.environ:
+        os.environ.pop('ENTRYPOINT_DISABLE_RELOAD')
 
     with mock.patch('os.kill') as os_kill:
         entry = Entrypoint(conf='configs/reloader/reloader_config.yml')

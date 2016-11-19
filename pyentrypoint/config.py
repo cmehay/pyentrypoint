@@ -71,6 +71,16 @@ class ConfigMeta(object):
                     '"{key}" is not a valid option'.format(key=key)
                 )
 
+    def _get_from_env(self, env, key):
+        val = os.environ.get(env, None)
+        if val is None:
+            return None
+        try:
+            val = int(val)
+        except ValueError:
+            pass
+        self._config[key] = val
+
 
 class Config(ConfigMeta):
 
@@ -125,6 +135,7 @@ class Config(ConfigMeta):
     @property
     def user(self):
         "Unix user or uid to run command."
+        self._get_from_env(env='ENTRYPOINT_USER', key='user')
         if 'user' in self._config:
             if isinstance(self._config['user'], int):
                 return self._config['user']
@@ -134,10 +145,11 @@ class Config(ConfigMeta):
     @property
     def group(self):
         "Unix group or gid to run command."
+        self._get_from_env(env='ENTRYPOINT_GROUP', key='group')
         if 'group' in self._config:
-            if isinstance(self._config['user'], int):
-                return self._config['user']
-            return getgrnam(self._config['user']).gr_gid
+            if isinstance(self._config['group'], int):
+                return self._config['group']
+            return getgrnam(self._config['group']).gr_gid
         return os.getgid()
 
     @property
@@ -176,9 +188,11 @@ class Config(ConfigMeta):
     @property
     def reload(self):
         """Return Reloader object if reload is set"""
+
         if self._reload:
             return self._reload
-        if not self._config.get('reload'):
+        if (not self._config.get('reload') or
+                'ENTRYPOINT_DISABLE_RELOAD' in os.environ):
             return None
         self._reload = self.get_reloader()
         return self._reload

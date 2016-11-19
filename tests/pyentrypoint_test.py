@@ -184,7 +184,7 @@ def test_command():
         (Process(target=Entrypoint(
             conf='configs/usernames.yml',
             args=['bash', '-c', 'echo OK > /tmp/CMD3']).launch),
-            '/tmp/CMD3', 33, 33),
+            '/tmp/CMD3', 1009, 1010),
         (Process(target=Entrypoint(
             conf='configs/unhandled.yml',
             args=['bash', '-c', 'echo OK > /tmp/CMD4']).launch),
@@ -246,3 +246,36 @@ def test_debug_env():
     assert entry.config.debug
 
     del os.environ['ENTRYPOINT_DEBUG']
+
+
+def test_quiet_env():
+    os.environ['ENTRYPOINT_QUIET'] = 'true'
+    entry = Entrypoint(conf='configs/empty.yml')
+
+    assert entry.config.quiet
+
+    del os.environ['ENTRYPOINT_QUIET']
+
+
+def test_user_env():
+    os.environ['ENTRYPOINT_USER'] = '100'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.config.user == 100
+
+    os.environ['ENTRYPOINT_USER'] = 'testuser'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.config.user == 1009
+
+
+def test_group_env():
+    os.environ['ENTRYPOINT_GROUP'] = '100'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.config.group == 100
+
+    os.environ['ENTRYPOINT_GROUP'] = 'testgroup'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.config.group == 1010

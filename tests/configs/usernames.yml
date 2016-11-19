@@ -1,6 +1,6 @@
 command: bash
 
-user: www-data
-group: www-data
+user: testuser
+group: testgroup
 
 debug: true
