@@ -7,6 +7,7 @@ This tool avoids writing shell scripts to:
  - Identify linked containers
  - Generate configuration using `jinja2` templates
  - Run commands before starting service
+ - Reload service when configuration has changed
 
 [![Documentation Status](https://readthedocs.org/projects/pyentrypoint/badge/?version=latest)](http://pyentrypoint.readthedocs.io/en/latest/?badge=latest)
 
@@ -247,6 +248,11 @@ Some setups can be overridden using environment variables.
 - `ENTRYPOINT_DEBUG` enables debug logs.
 - `ENTRYPOINT_RAW` does not use logging to display pre and post conf commands.
    This can be useful if output is serialized.
+- `ENTRYPOINT_DISABLE_RELOAD` disable reload system even if it is enabled in `entrypoint-config.yml`.
+- `ENTRYPOINT_USER` overrides `user` in config.
+- `ENTRYPOINT_GROUP` overrides `group` in config.
+
+
 
 ### Running Tests
 
