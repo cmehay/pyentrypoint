@@ -54,6 +54,11 @@ class Entrypoint(object):
         return self.config.command.is_handled
 
     @property
+    def is_disabled(self):
+        """Return if service is disabled using environment"""
+        return 'ENTRYPOINT_DISABLE_SERVICE' in os.environ
+
+    @property
     def should_config(self):
         """Check environment to tell if config should apply anyway"""
         return 'ENTRYPOINT_FORCE' in os.environ
@@ -62,6 +67,15 @@ class Entrypoint(object):
     def raw_output(self):
         """Check if command output should be displayed using logging or not"""
         return 'ENTRYPOINT_RAW' in os.environ
+
+    def exit_if_disabled(self):
+        """Exist 0 if service is disabled"""
+        if not self.is_disabled:
+            return
+
+        self.log.warning("Service is disabled by 'ENTRYPOINT_DISABLE_SERVICE' "
+                         "environement variable... exiting with 0")
+        exit(0)
 
     def apply_conf(self):
         """Apply config to template files"""
@@ -120,6 +134,7 @@ def main(argv):
     argv.pop(0)
     entry = Entrypoint(args=argv)
     try:
+        entry.exit_if_disabled()
         if not entry.is_handled and not entry.should_config:
             entry.log.warning("Running command without config")
             entry.launch()

@@ -251,6 +251,7 @@ Some setups can be overridden using environment variables.
 - `ENTRYPOINT_DISABLE_RELOAD` disable reload system even if it is enabled in `entrypoint-config.yml`.
 - `ENTRYPOINT_USER` overrides `user` in config.
 - `ENTRYPOINT_GROUP` overrides `group` in config.
+- `ENTRYPOINT_DISABLE_SERVICE` exits container with 0 before doing anything. Useful to disable container using environement.
 
 
 
