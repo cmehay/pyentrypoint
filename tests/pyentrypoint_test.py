@@ -6,6 +6,7 @@ import fnmatch
 import os
 from multiprocessing import Process
 
+import pytest
 from yaml import load
 from yaml import Loader
 
@@ -268,6 +269,8 @@ def test_user_env():
 
     assert entry.config.user == 1009
 
+    del os.environ['ENTRYPOINT_USER']
+
 
 def test_group_env():
     os.environ['ENTRYPOINT_GROUP'] = '100'
@@ -279,3 +282,17 @@ def test_group_env():
     entry = Entrypoint(conf='configs/base.yml')
 
     assert entry.config.group == 1010
+
+    del os.environ['ENTRYPOINT_GROUP']
+
+
+def test_disabled_service():
+    os.environ['ENTRYPOINT_DISABLE_SERVICE'] = 'true'
+    entry = Entrypoint(conf='configs/base.yml')
+
+    assert entry.is_disabled
+
+    with pytest.raises(SystemExit):
+        entry.exit_if_disabled()
+
+    del os.environ['ENTRYPOINT_DISABLE_SERVICE']
