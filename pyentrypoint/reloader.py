@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import glob
 import os
 import signal
 from multiprocessing import Process
@@ -18,14 +19,14 @@ class Reload(FileSystemEventHandler):
 
     """Reload object"""
 
-    def __init__(self, sig, files, pid=1):
+    def __init__(self, sig, reloader, pid=1):
         self.signal = sig
-        self.files = files
+        self.reloader = reloader
         self.pid = pid
         self.log = Logs().log
 
     def on_any_event(self, event):
-        if event.src_path in self.files:
+        if event.src_path in self.reloader.files:
             self.log.info(
                 'File {file} has changed, send sig {sig} to pid {pid}'.format(
                     file=event.src_path,
@@ -34,6 +35,12 @@ class Reload(FileSystemEventHandler):
                 )
             )
             os.kill(self.pid, self.signal)
+        else:
+            self.log.debug(
+                'Reloader triggered but file {file} not watched'.format(
+                    file=file
+                )
+            )
 
 
 class Reloader(object):
@@ -44,6 +51,7 @@ class Reloader(object):
         if not files:
             raise Exception('No file to watch for reload')
 
+        self.log = Logs().log
         self.proc = None
         self._files = files
         sig_attr = getattr(signal, sig)
@@ -52,13 +60,18 @@ class Reloader(object):
         except:
             raise Exception('Wrong signal provided for reload')
         self.observer = Observer()
-        rel = Reload(sig=sig_attr, files=self.files)
+        rel = Reload(sig=sig_attr, reloader=self)
         for dir in self.dirs:
+            self.log.debug('Registering watcher for {dir}'.format(dir=dir))
             self.observer.schedule(rel, dir, recursive=False)
 
     def _get_files(self):
         """Return iterator of tuples (path, file)"""
         for f in self._files:
+            for m in glob.iglob(f):
+                if os.path.isdir(m):
+                    yield (m, m)
+                yield (os.path.dirname(m), m)
             if os.path.isdir(f):
                 yield (f, f)
             yield (os.path.dirname(f), f)

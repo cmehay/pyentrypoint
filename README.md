@@ -125,6 +125,7 @@ reload:
     watch_config_files: true # Optional, watch defined config files, default True
     files: # Optional, list of files to watch
         - /etc/conf/to/watch
+        - /file/support/*.matching
 # can also be enabled like this:
 reload: true
 

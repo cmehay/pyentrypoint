@@ -4,7 +4,8 @@ config_files:
 reload:
     watch_config_files: false
     files:
-        - /tmp/reload_custom
+        - /tmp/1/reload_custom
+        - /tmp/2/*.match
 
 pre_conf_commands:
     - touch /tmp/reload_custom
