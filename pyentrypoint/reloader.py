@@ -37,7 +37,7 @@ class Reload(FileSystemEventHandler):
             os.kill(self.pid, self.signal)
         else:
             self.log.debug(
-                'Reloader triggered but file {file} not watched'.format(
+                'Reloader triggered but file {file} is not watched'.format(
                     file=file
                 )
             )
