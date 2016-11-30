@@ -45,10 +45,20 @@ ID:
 
 ENV:
 {% for e in env %}
-    {{e}}: {{env[e]}}
+    '{{e}}': '{{env[e]}}'
 {% endfor %}
 
 ENVIRON:
 {% for e in environ %}
-    {{e}}: {{env[e]}}
+    '{{e}}': '{{env[e]}}'
+{% endfor %}
+
+JSON:
+{% for key, val in json.loads(env['JSON']).items() %}
+    '{{key}}': '{{val}}'
+{% endfor %}
+
+YAML:
+{% for key, val in yaml.load(env['YAML']).items() %}
+    '{{key}}': '{{val}}'
 {% endfor %}

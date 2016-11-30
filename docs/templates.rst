@@ -92,3 +92,19 @@ environ
 ``environ`` is the environment of the container (os.environ).
 
 ``env`` is an alias to ``environ``.
+
+``yaml`` and ``json``
+^^^^^^^^^^^^^^^^^^^^^
+
+``yaml`` and ``json`` objects are respectively an import of `PyYAML <http://pyyaml.org/>` and `json <https://docs.python.org/2/library/json.html> modules.
+
+They are useful to load and dump serialized data from environment.
+
+.. code:: jinja
+    # Here yaml is present in SETUP_YAML environment variable
+    {% set data = yaml.load(env['SETUP_YAML'])%}
+    {{data['param']}}
+
+    # Here json is present in SETUP_JSON environment variable
+    {% set data = json.loads(env['SETUP_JSON'])%}
+    {{data['param']}}

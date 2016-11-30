@@ -1,52 +1,64 @@
 testpython3:
     build: .
     dockerfile: Dockerfile.py3
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
     links:
         - test1
         - test2
         - test3
         - test4
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
+    extends:
+        file: common.yml
+        service: environ
 
 testpython2:
     build: .
     dockerfile: Dockerfile.py2
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
     links:
         - test1
         - test2
         - test3
         - test4
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
+    extends:
+        file: common.yml
+        service: environ
 
 testpython3_debug:
     build: .
     dockerfile: Dockerfile.py3
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
     links:
         - test1
         - test2
         - test3
         - test4
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
+    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    extends:
+        file: common.yml
+        service: environ
 
 testpython2_debug:
     build: .
     dockerfile: Dockerfile.py2
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
     links:
         - test1
         - test2
         - test3
         - test4
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
+    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    extends:
+        file: common.yml
+        service: environ
 
 test1:
     image: busybox

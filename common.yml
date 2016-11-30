@@ -1,0 +1,7 @@
+environ:
+    environment:
+        SECRET: nothing
+        JSON: |
+            {"json": "ok"}
+        YAML: |
+            yaml: ok
