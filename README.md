@@ -147,7 +147,7 @@ You can generate configuration for your service with jinga2 template.
 
 Here is an example for an hypothetical ssh config file:
 
-```jinga
+```jinja
 host server:
     hostname {{links.ssh.ip}}
     port {{links.ssh.port}}
@@ -155,7 +155,7 @@ host server:
 
 Templates will be replaced with ip address and port of the identified link. All links can be accessed from `links.all`, this is a tuple of links you can iterate on it.
 
-```jinga
+```jinja
 {% for link in links.all %}
 host {{link.names[0]}}
     hostname {{link.ip}}
@@ -165,7 +165,7 @@ host {{link.names[0]}}
 
 If you change the option `single` to `false` in the `entrypoint-config.yml`, the identified link `ssh` will become a tuple of links. You must iterate on it in the `jinja` template.
 
-```jinga
+```jinja
 {% for link in links.ssh %}
 host {{link.names[0]}}
     hostname {{link.ip}}
@@ -175,7 +175,7 @@ host {{link.names[0]}}
 
 Accessing environment in template.
 
-```jinga
+```jinja
 {% if 'SSHKEY in env' %}
 {{env['SSHKEY']}}
 {% endfor %}
@@ -189,6 +189,8 @@ You have 4 available objects in your templates.
  - `links`
  - `containers`
  - `environ`
+ - `yaml`
+ - `json`
 
 #### config
 
@@ -237,6 +239,21 @@ You have 4 available objects in your templates.
 
 `env` is an alias to `environ`.
 
+#### yaml and json
+
+`yaml` and `json` objects are respectively an import of [`PyYAML`](http://pyyaml.org/) and [`json`](https://docs.python.org/2/library/json.html) modules.
+
+They are useful to load and dump serialized data from environment.
+
+```jinja
+# Here yaml is present in SETUP_YAML environment variable
+{% set data = yaml.load(env['SETUP_YAML'])%}
+{{data['param']}}
+
+# Here json is present in SETUP_JSON environment variable
+{% set data = json.loads(env['SETUP_JSON'])%}
+{{data['param']}}
+```
 
 ## Setup
 

@@ -14,6 +14,4 @@ ADD tests/test_template.yml.tpl /tmp/test_template2.yml.tpl
 
 WORKDIR /opt/tests
 
-ENV SECRET nothing
-
 CMD ["py.test", "--verbose", "-rw", "."]

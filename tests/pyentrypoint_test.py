@@ -145,6 +145,12 @@ def test_templates():
             assert test['ENV']['SECRET'] == 'nothing'
             assert test['ENVIRON']['SECRET'] == 'nothing'
 
+            # test yaml
+            assert test['YAML']['yaml'] == 'ok'
+
+            # test json
+            assert test['JSON']['json'] == 'ok'
+
 
 def test_conf_commands():
     entry = Entrypoint(conf='configs/base.yml')

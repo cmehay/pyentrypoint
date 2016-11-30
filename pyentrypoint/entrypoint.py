@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import json
 import os
 from subprocess import PIPE
 from subprocess import Popen
@@ -13,6 +14,7 @@ from sys import argv
 from sys import exit
 from sys import stdout
 
+import yaml
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
@@ -88,6 +90,8 @@ class Entrypoint(object):
                                     links=self.config.links,
                                     env=os.environ,
                                     environ=os.environ,
+                                    json=json,
+                                    yaml=yaml,
                                     containers=DockerLinks().to_containers()))
 
     def run_conf_cmd(self, cmd):
