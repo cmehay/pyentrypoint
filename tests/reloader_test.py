@@ -20,6 +20,12 @@ from signal import SIGHUP
 
 from time import sleep
 
+from commons import clean_env
+
+
+def teardown_function(function):
+    clean_env()
+
 
 def _reloader_check(conf, command):
     entry = Entrypoint(conf=conf)

@@ -137,6 +137,8 @@ Affect only command handled.
 
     **Note**: Dockerfile USER value by default.
 
+Can be expended from environment in ``ENTRYPOINT_USER`` and ``ENTRYPOINT_GROUP``.
+
 config_files
 ^^^^^^^^^^^^
 

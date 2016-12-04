@@ -142,6 +142,7 @@ def main(argv):
         if not entry.is_handled and not entry.should_config:
             entry.log.warning("Running command without config")
             entry.launch()
+        entry.config.set_to_env()
         entry.log.debug("Starting config")
         entry.run_pre_conf_cmds()
         entry.apply_conf()

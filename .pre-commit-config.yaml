@@ -9,7 +9,6 @@
     - id: flake8
       args:
           - --exclude=__init__.py,docs/conf.py
-    - id: name-tests-test
     - id: autopep8-wrapper
     - id: requirements-txt-fixer
     - id: trailing-whitespace
