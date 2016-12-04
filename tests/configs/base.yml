@@ -31,6 +31,9 @@ pre_conf_commands:
 post_conf_commands:
     - echo TEST2 > /tmp/OKOK
     - echo TEST3 > /tmp/OKOKOK
+    - echo ${ENTRYPOINT_USER} > /tmp/user
+    - echo ${ENTRYPOINT_GROUP} > /tmp/group
+    - echo ${ENTRYPOINT_DEBUG} > /tmp/debug
     - echo "INFO IS DISPLAYED\nON TWO LINES"
     - echo "WARNING IS DISPLAYED" 1>&2
 

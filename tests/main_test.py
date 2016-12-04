@@ -5,7 +5,13 @@ from __future__ import unicode_literals
 import os
 from multiprocessing import Process
 
+from commons import clean_env
+
 from pyentrypoint.entrypoint import main
+
+
+def teardown_function(function):
+    clean_env()
 
 
 class ProxyMain(object):

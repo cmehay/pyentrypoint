@@ -81,6 +81,24 @@ class ConfigMeta(object):
             pass
         self._config[key] = val
 
+    def set_to_env(self):
+        self.log.debug('Add conf to environment')
+        for attr in [a for a in dir(self) if not a.startswith('_')]:
+            setup = getattr(self, attr)
+            env = 'ENTRYPOINT_{attr}'.format(attr=attr.upper())
+            if type(setup) is bool and setup:
+                self.log.debug('set env {env} with "true"'.format(
+                    env=env
+                ))
+                os.environ[env] = 'true'
+            if type(setup) is int or type(setup) is str:
+                if env not in os.environ:
+                    self.log.debug('set env {env} with "{val}"'.format(
+                        env=env,
+                        val=str(setup),
+                    ))
+                    os.environ[env] = str(setup)
+
 
 class Config(ConfigMeta):
 

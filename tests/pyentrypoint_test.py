@@ -7,6 +7,7 @@ import os
 from multiprocessing import Process
 
 import pytest
+from commons import clean_env
 from yaml import load
 from yaml import Loader
 
@@ -19,6 +20,10 @@ LINKS = [
     'test3',
     'test4',
 ]
+
+
+def teardown_function(function):
+    clean_env()
 
 
 def test_all_links():
@@ -153,28 +158,32 @@ def test_templates():
 
 
 def test_conf_commands():
+
     entry = Entrypoint(conf='configs/base.yml')
+
+    checks = [
+        ('/tmp/OK', 'TEST'),
+        ('/tmp/OKOK', 'TEST2'),
+        ('/tmp/OKOKOK', 'TEST3'),
+        ('/tmp/OKOKOKOK', 'TEST4'),
+        ('/tmp/OKOKOKOKOK', 'TEST5'),
+        ('/tmp/user', '1000'),
+        ('/tmp/group', '1000'),
+        ('/tmp/debug', 'true'),
+    ]
 
     os.environ['ENTRYPOINT_PRECONF_COMMAND'] = 'echo TEST4 > /tmp/OKOKOKOK'
     os.environ['ENTRYPOINT_POSTCONF_COMMAND'] = 'echo TEST5 > /tmp/OKOKOKOKOK'
 
+    entry.config.set_to_env()
     entry.run_pre_conf_cmds()
     entry.run_post_conf_cmds()
 
-    with open('/tmp/OK') as f:
-        assert f.readline().startswith('TEST')
-
-    with open('/tmp/OKOK') as f:
-        assert f.readline().startswith('TEST2')
-
-    with open('/tmp/OKOKOK') as f:
-        assert f.readline().startswith('TEST3')
-
-    with open('/tmp/OKOKOKOK') as f:
-        assert f.readline().startswith('TEST4')
-
-    with open('/tmp/OKOKOKOKOK') as f:
-        assert f.readline().startswith('TEST5')
+    for filename, value in checks:
+        with open(filename) as f:
+            line = f.readline()
+            print(line)
+            assert line.startswith(value)
 
 
 def test_command():
