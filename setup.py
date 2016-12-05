@@ -5,7 +5,7 @@ from setuptools import setup
 
 # Thanks Sam and Max
 
-__version__ = '0.4.6'
+__version__ = '0.4.7'
 
 if __name__ == '__main__':
     setup(
@@ -27,7 +27,6 @@ if __name__ == '__main__':
         install_requires=['Jinja2>=2.8',
                           'PyYAML>=3.11',
                           'colorlog>=2.6.1',
-                          'argparse>=1.4.0',
                           'six>=1.10.0',
                           'watchdog>=0.8.3'],
 

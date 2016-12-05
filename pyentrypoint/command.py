@@ -79,6 +79,8 @@ class Command(object):
         self.log.debug('Now running: "{args}"'.format(
             args='" "'.join(self.args)
         ))
+        if not self.args[0]:
+            raise Exception('Nothing to run')
         os.execvpe(self.args[0], self.args, self.env)
 
     def _run_reloader(self):

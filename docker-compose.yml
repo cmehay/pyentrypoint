@@ -1,6 +1,6 @@
 testpython3:
     build: .
-    dockerfile: Dockerfile.py3
+    dockerfile: Dockerfile-test.py3
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -15,7 +15,7 @@ testpython3:
 
 testpython2:
     build: .
-    dockerfile: Dockerfile.py2
+    dockerfile: Dockerfile-test.py2
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -30,7 +30,7 @@ testpython2:
 
 testpython3_debug:
     build: .
-    dockerfile: Dockerfile.py3
+    dockerfile: Dockerfile-test.py3
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -46,7 +46,7 @@ testpython3_debug:
 
 testpython2_debug:
     build: .
-    dockerfile: Dockerfile.py2
+    dockerfile: Dockerfile-test.py2
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
