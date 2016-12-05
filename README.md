@@ -45,6 +45,22 @@ ENTRYPOINT  ['pyentrypoint']
 CMD         ['git']
 ```
 
+#### Using docker-image
+
+```dockerfile
+FROM    goldy/pyentrypoint:python3
+
+# ONBUILD statement add entrypoint-config.yml in current directories
+
+```
+
+Available with many flavours:
+
+- `goldy/pyentrypoint:python2`
+- `goldy/pyentrypoint:python3`
+- `goldy/pyentrypoint:python2-alpine`
+- `goldy/pyentrypoint:python3-alpine`
+
 ### Working examples
  - [Tor hidden service](https://github.com/cmehay/docker-tor-hidden-service)
 
