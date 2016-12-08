@@ -46,6 +46,7 @@ This is an example of ``entrypoint-config.yml`` file.
     # Links are handled here
     # Port, name, protocol or env variable can be used to identify the links
     # Raise an error if the link could not be identified
+    # This not supported when using docker network or docker-compose v2.
     links:
         'ssh':
             port: 22
@@ -174,6 +175,8 @@ running command to keep them secret.
 
 links
 ^^^^^
+
+**Not supported when using docker network or docker-compose v2.**
 
 Links are handled here.
 
