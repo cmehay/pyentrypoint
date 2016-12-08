@@ -64,6 +64,8 @@ object.
 links
 ^^^^^
 
+**Not supported when using docker network or docker-compose v2.**
+
 ``Links`` handles ``Link`` objects. You can identify links using
 wildcard patterns in the configuration file.
 
@@ -77,6 +79,8 @@ container names
 
 containers
 ^^^^^^^^^^
+
+**Not supported when using docker network or docker-compose v2.**
 
 ``containers`` handles a tuple of ``container`` object.
 

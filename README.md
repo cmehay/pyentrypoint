@@ -111,6 +111,7 @@ secret_env:
 # Links are handled here
 # Port, name, protocol or env variable can be used to identify the links
 # Raise an error if the link could not be identified
+# This is not supported when using docker network or docker-compose v2.
 links:
     'ssh':
         port: 22
@@ -159,7 +160,9 @@ quiet: false
 
 ### Config templates
 
-You can generate configuration for your service with jinga2 template.
+You can generate configuration for your service with jinja2 template.
+
+**`links` and `containers` are not supported with docker network and docker-compose v2.**
 
 Here is an example for an hypothetical ssh config file:
 
@@ -216,6 +219,8 @@ You have 4 available objects in your templates.
 
 #### links
 
+**Not supported with docker network and docker-compose v2**
+
 `Links` handles `Link` objects. You can identify links using wildcard patterns in the configuration file.
 
 `link` is related to one physical link (one ip and one port).
@@ -235,6 +240,9 @@ You have 4 available objects in your templates.
     - tuple of related container names
 
 #### containers
+
+**Not supported with docker network and docker-compose v2**
+
 `containers` handles a tuple of `container` object.
 
 `container` handles the following attributes:
