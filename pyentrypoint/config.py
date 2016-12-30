@@ -204,6 +204,11 @@ class Config(ConfigMeta):
         return self._return_item_lst('post_conf_commands')
 
     @property
+    def post_run_commands(self):
+        """Return list of post run commands"""
+        return self._return_item_lst('post_run_commands')
+
+    @property
     def reload(self):
         """Return Reloader object if reload is set"""
 
@@ -239,3 +244,20 @@ class Config(ConfigMeta):
         if 'ENTRYPOINT_QUIET' in os.environ:
             return True
         return bool(self._config.get('quiet', False))
+
+    @property
+    def is_disabled(self):
+        """Return if service is disabled using environment"""
+        return 'ENTRYPOINT_DISABLE_SERVICE' in os.environ
+
+    @property
+    def should_config(self):
+        """Check environment to tell if config should apply anyway"""
+        return 'ENTRYPOINT_FORCE' in os.environ
+
+    @property
+    def raw_output(self):
+        """Check if command output should be displayed using logging or not"""
+        if 'ENTRYPOINT_RAW' in os.environ:
+            return True
+        return bool(self._config.get('raw_output', False))

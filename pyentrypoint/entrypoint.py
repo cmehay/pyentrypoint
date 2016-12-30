@@ -8,11 +8,8 @@ from __future__ import unicode_literals
 
 import json
 import os
-from subprocess import PIPE
-from subprocess import Popen
 from sys import argv
 from sys import exit
-from sys import stdout
 
 import yaml
 from jinja2 import Environment
@@ -22,6 +19,7 @@ from .config import Config
 from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .logs import Logs
+from .runner import Runner
 
 __all__ = ['Entrypoint', 'main']
 
@@ -49,6 +47,7 @@ class Entrypoint(object):
             if self.config.quiet:
                 Logs.set_critical()
         self.args = args
+        self.runner = Runner(config=self.config)
 
     @property
     def is_handled(self):
@@ -58,21 +57,21 @@ class Entrypoint(object):
     @property
     def is_disabled(self):
         """Return if service is disabled using environment"""
-        return 'ENTRYPOINT_DISABLE_SERVICE' in os.environ
+        return self.config.is_disabled
 
     @property
     def should_config(self):
         """Check environment to tell if config should apply anyway"""
-        return 'ENTRYPOINT_FORCE' in os.environ
+        return self.config.should_config
 
     @property
     def raw_output(self):
         """Check if command output should be displayed using logging or not"""
-        return 'ENTRYPOINT_RAW' in os.environ
+        return self.config.raw_output
 
     def exit_if_disabled(self):
         """Exist 0 if service is disabled"""
-        if not self.is_disabled:
+        if not self.config.is_disabled:
             return
 
         self.log.warning("Service is disabled by 'ENTRYPOINT_DISABLE_SERVICE' "
@@ -94,41 +93,17 @@ class Entrypoint(object):
                                     yaml=yaml,
                                     containers=DockerLinks().to_containers()))
 
-    def run_conf_cmd(self, cmd):
-        self.log.debug('run command: {}'.format(cmd))
-        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-        out, err = proc.communicate()
-
-        def dispout(output, cb):
-            enc = stdout.encoding or 'UTF-8'
-            output = output.decode(enc).split('\n')
-            l = len(output)
-            for c, line in enumerate(output):
-                if c + 1 == l and not len(line):
-                    # Do not display last empty line
-                    break
-                cb(line)
-
-        if out:
-            display_cb = self.log.info if not self.raw_output else print
-            dispout(out, display_cb)
-        if err:
-            display_cb = self.log.warning if not self.raw_output else print
-            dispout(err, display_cb)
-        if proc.returncode:
-            raise Exception('Command exit code: {}'.format(proc.returncode))
-
     def run_pre_conf_cmds(self):
         for cmd in self.config.pre_conf_commands:
-            self.run_conf_cmd(cmd)
+            self.runner.run_cmd(cmd)
         if 'ENTRYPOINT_PRECONF_COMMAND' in os.environ:
-            self.run_conf_cmd(os.environ['ENTRYPOINT_PRECONF_COMMAND'])
+            self.runner.run_cmd(os.environ['ENTRYPOINT_PRECONF_COMMAND'])
 
     def run_post_conf_cmds(self):
         for cmd in self.config.post_conf_commands:
-            self.run_conf_cmd(cmd)
+            self.runner.run_cmd(cmd)
         if 'ENTRYPOINT_POSTCONF_COMMAND' in os.environ:
-            self.run_conf_cmd(os.environ['ENTRYPOINT_POSTCONF_COMMAND'])
+            self.runner.run_cmd(os.environ['ENTRYPOINT_POSTCONF_COMMAND'])
 
     def launch(self):
         self.config.command.run()

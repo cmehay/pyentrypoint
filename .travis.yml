@@ -1,0 +1,12 @@
+sudo: required
+
+services:
+  - docker
+
+language: python
+
+before_install:
+    - pip install -r requirements-dev.txt
+
+script:
+    - make test
