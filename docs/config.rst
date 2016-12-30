@@ -46,7 +46,7 @@ This is an example of ``entrypoint-config.yml`` file.
     # Links are handled here
     # Port, name, protocol or env variable can be used to identify the links
     # Raise an error if the link could not be identified
-    # This not supported when using docker network or docker-compose v2.
+    # This is not supported when using docker network or docker-compose v2.
     links:
         'ssh':
             port: 22
@@ -69,6 +69,9 @@ This is an example of ``entrypoint-config.yml`` file.
     # commands to run after applying configuration
     post_conf_commands:
         - echo "something else" > to_this_another_file
+
+    post_run_commands:
+        - echo run commands after started service
 
     # Reload service when configuration change by sending a signal to process
     reload:
@@ -226,6 +229,18 @@ List of shell commands to run after applying configuration
 
     post_conf_commands:
         - echo "something else" > to_this_another_file
+
+post_run_commands
+^^^^^^^^^^^^^^^^^^
+
+List of shell commands to run after service is started
+
+.. code:: yaml
+
+    post_run_commands:
+        - sleep 5
+        - echo "something else" > to_this_another_file
+
 
 reload
 ^^^^^^
