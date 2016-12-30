@@ -1,0 +1,5 @@
+post_run_commands:
+    - sleep 2
+    - echo 'OK' > /tmp/runner_test
+
+command: sleep

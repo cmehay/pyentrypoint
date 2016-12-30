@@ -6,6 +6,7 @@ import os
 from fnmatch import fnmatch
 
 from .logs import Logs
+from .runner import Runner
 
 
 class Command(object):
@@ -21,6 +22,8 @@ class Command(object):
         self.log.debug('Arguments are: "{args}"'.format(
             args='" "'.join(self.args)
         ))
+        self.runner = Runner(config=self.config,
+                             cmds=self.config.post_run_commands)
 
     def _rm_dockerenv(self):
         """Delete '/.dockerenv' and '/.dockerinit' files"""
@@ -88,6 +91,11 @@ class Command(object):
             self.log.debug('Launching reloader process')
             self.config.reload.run_in_process()
 
+    def _run_post_commands(self):
+        if self.config.post_run_commands:
+            self.log.debug('Running post run commands')
+            self.runner.run_in_process()
+
     def run(self):
         if not self.is_handled:
             self._exec()
@@ -107,4 +115,5 @@ class Command(object):
                 [p for p in subcom if fnmatch(self.args[0], p)]:
             self.args.insert(0, self.command)
         self._run_reloader()
+        self._run_post_commands()
         self._exec()
