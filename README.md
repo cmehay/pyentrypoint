@@ -9,7 +9,7 @@ This tool avoids writing shell scripts to:
  - Run commands before starting service
  - Reload service when configuration has changed
 
-[![Documentation Status](https://readthedocs.org/projects/pyentrypoint/badge/?version=latest)](http://pyentrypoint.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/pyentrypoint/badge/?version=latest)](http://pyentrypoint.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/cmehay/pyentrypoint.svg?branch=master)](https://travis-ci.org/cmehay/pyentrypoint)
 
 ## Usages
 
@@ -134,6 +134,9 @@ pre_conf_commands:
 # commands to run after applying configuration
 post_conf_commands:
     - echo "something else" > to_this_another_file
+
+post_run_commands:
+    - echo run commands after started service
 
 # Reload service when configuration change by sending a signal to process
 reload:
