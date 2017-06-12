@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+    testpython3:
+        build:
+            context: .
+            dockerfile: Dockerfile-test.py3
+        command: ["py.test", "--verbose", "-rw", "-m", "v3", "."]
+
+    testpython2:
+        build:
+            context: .
+            dockerfile: Dockerfile-test.py2
+        command: ["py.test", "--verbose", "-rw", "-m", "v3", "."]
+
+    testpython3_debug:
+        build:
+            context: .
+            dockerfile: Dockerfile-test.py3
+        command: ["py.test", "--verbose", "-s", "-rw", "-m", "v3", "."]
+
+    testpython2_debug:
+        build:
+            context: .
+            dockerfile: Dockerfile-test.py2
+        command: ["py.test", "--verbose", "-s", "-rw", "-m", "v3", "."]
+
+secrets:
+    secret1:
+        file: ./secret1_file
+    secret2:
+        file: ./secret2_file

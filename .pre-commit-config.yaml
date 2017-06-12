@@ -1,19 +1,19 @@
-- repo: git://github.com/pre-commit/pre-commit-hooks
-  sha: 'v0.6.0'
-  hooks:
-    - id: check-added-large-files
-    - id: check-docstring-first
-    - id: check-merge-conflict
-    - id: check-yaml
-    - id: end-of-file-fixer
-    - id: flake8
-      args:
-          - --exclude=__init__.py,docs/conf.py
-    - id: autopep8-wrapper
-    - id: requirements-txt-fixer
-    - id: trailing-whitespace
-- repo: git://github.com/asottile/reorder_python_imports
-  sha: 3d86483455ab5bd06cc1069fdd5ac57be5463f10
-  hooks:
-    - id: reorder-python-imports
-      language_version: 'python2.7'
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: 78818b90cd694c29333ba54d38f9e60b6359ccfc
+    hooks:
+    -   id: check-added-large-files
+    -   id: check-docstring-first
+    -   id: check-merge-conflict
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: flake8
+        args:
+        - --exclude=__init__.py,docs/conf.py
+    -   id: autopep8-wrapper
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
+-   repo: git://github.com/asottile/reorder_python_imports
+    sha: 2bff31275b3a2fef7d75989ae60e57f1a8616ed6
+    hooks:
+    -   id: reorder-python-imports
+        language_version: python2.7

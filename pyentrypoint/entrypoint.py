@@ -20,6 +20,7 @@ from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .logs import Logs
 from .runner import Runner
+from .secrets import Secrets
 
 __all__ = ['Entrypoint', 'main']
 
@@ -91,6 +92,7 @@ class Entrypoint(object):
                                     environ=os.environ,
                                     json=json,
                                     yaml=yaml,
+                                    secrets=Secrets(),
                                     containers=DockerLinks().to_containers()))
 
     def run_pre_conf_cmds(self):

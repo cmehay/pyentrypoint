@@ -53,6 +53,8 @@ You have 4 available objects in your templates.
 -  ``containers``
 -  ``environ``
 
+``links`` and ``containers`` are not supported by docker network or docker-compose v2.
+
 config
 ^^^^^^
 

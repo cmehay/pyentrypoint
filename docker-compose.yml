@@ -9,6 +9,7 @@ testpython3:
         - test2
         - test3
         - test4
+    command: ["py.test", "--verbose", "-rw", "-m", "not v3", "."]
     extends:
         file: common.yml
         service: environ
@@ -24,6 +25,7 @@ testpython2:
         - test2
         - test3
         - test4
+    command: ["py.test", "--verbose", "-rw", "-m", "not v3", "."]
     extends:
         file: common.yml
         service: environ
@@ -39,7 +41,7 @@ testpython3_debug:
         - test2
         - test3
         - test4
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    command: ["py.test", "--verbose", "-s", "-rw", "-m", "not v3", "."]
     extends:
         file: common.yml
         service: environ
@@ -55,7 +57,7 @@ testpython2_debug:
         - test2
         - test3
         - test4
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
+    command: ["py.test", "--verbose", "-s", "-rw", "-m", "not v3", "."]
     extends:
         file: common.yml
         service: environ
