@@ -10,8 +10,7 @@ from io import open
 from pwd import getpwnam
 
 from six import string_types
-from yaml import load
-from yaml import Loader
+from yaml import safe_load
 
 from .command import Command
 from .constants import ENTRYPOINT_FILE
@@ -122,7 +121,7 @@ class Config(ConfigMeta):
             self.log.critical('Entrypoint config file does not provided')
             return
         with open(self._config_file) as f:
-            self._config = load(stream=f, Loader=Loader)
+            self._config = safe_load(stream=f)
         self._check_config()
 
     @property
