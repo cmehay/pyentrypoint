@@ -227,6 +227,13 @@ class Config(ConfigMeta):
         return True
 
     @property
+    def remove_dockerenv(self):
+        """Remove dockerenv and dockerinit files"""
+        if 'remove_dockerenv' in self._config:
+            return bool(self._config['remove_dockerenv'])
+        return True
+
+    @property
     def debug(self):
         """Enable debug logs."""
         if 'ENTRYPOINT_DEBUG' in os.environ:

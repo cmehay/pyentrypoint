@@ -99,7 +99,8 @@ class Command(object):
     def run(self):
         if not self.is_handled:
             self._exec()
-        self._rm_dockerenv()
+        if self.config.remove_dockerenv:
+            self._rm_dockerenv()
         if os.getuid() is 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)
