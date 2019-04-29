@@ -66,7 +66,8 @@ class Command(object):
                     to_del.append(key)
 
         for item in to_del:
-            del(self.env[item])
+            if item in self.env:
+                del(self.env[item])
 
     @property
     def is_handled(self):
