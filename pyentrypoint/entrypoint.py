@@ -125,6 +125,7 @@ def main(argv):
         entry.launch()
     except Exception as e:
         entry.log.error(str(e))
+        exit(1)
 
 
 if __name__ == '__main__':
