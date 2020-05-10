@@ -1,7 +1,4 @@
 "Command object"
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import os
 from fnmatch import fnmatch
 
@@ -71,6 +68,10 @@ class Command(object):
 
     @property
     def is_handled(self):
+        if self.config.commands and self.args:
+            return [
+                p for p in self.config.commands if fnmatch(self.args[0], p)
+            ]
         subcom = self.config.subcommands
         if not self.args or self.args[0] == self.command or \
                 [p for p in subcom if fnmatch(self.args[0], p)]:
@@ -102,7 +103,7 @@ class Command(object):
             self._exec()
         if self.config.remove_dockerenv:
             self._rm_dockerenv()
-        if os.getuid() is 0:
+        if os.getuid() == 0:
             os.setgid(self.config.group)
             os.setuid(self.config.user)
             self.log.debug('Set uid {uid} and gid {gid}'.format(

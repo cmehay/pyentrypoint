@@ -1,9 +1,6 @@
 """
     Link handle a single link to another container, determined by his port
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import fnmatch
 
 from six import viewitems
@@ -57,7 +54,7 @@ class Links(object):
                     'required': True}
 
     def __init__(self, config={}, links=None):
-        if not links or len(links.links()) is 0:
+        if not links or len(links.links()) == 0:
             pass
 
         self._links = []
@@ -82,7 +79,7 @@ class Links(object):
             links = [link for link in links
                      if getattr(link, "_filter_{}".format(key))(val)]
 
-        if options['required'] and len(links) is 0:
+        if options['required'] and len(links) == 0:
             raise Exception("No links was found for {name}".format(name=name))
         if options['single'] and len(links) > 1:
             raise Exception("Only one link should be provided for {name}"

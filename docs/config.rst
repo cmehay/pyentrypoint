@@ -7,12 +7,26 @@ This is an example of ``entrypoint-config.yml`` file.
 
     # Entrypoint configuration example
 
+    # This entry list commands handled by entrypoint.
+    # If you run the container with a command not in this list,
+    # pyentrypoint will run the command directly without any action
+    # If this option and `command` are not set, all commands will be handled.
+    # Support wildcard
+    commands:
+        - git
+        - sl*
+
+    # DEPRECATED: This option is remplaced by `commands`
     # This entry should reflect CMD in Dockerfile
+    # If `commands` is present, this option will be ignored.
+    # DEPRECATED: This option is remplaced by `commands`
     command: git
 
+    # DEPRECATED: This option will be dropped
     # This is a list with some subcommands to handle
     # when CMD is not `git` here.
     # By default, all args started with hyphen are handled.
+    # DEPRECATED: This option will be dropped
     subcommands:
         - "-*"
         - clone

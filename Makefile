@@ -6,17 +6,20 @@ build:
 clean:
 	docker-compose down --remove-orphans
 
-test: build test-python2 test-python3 clean
+test: build test-python3.6 test-python3.7 test-python3.8 clean
 
-test-python2:
-	@docker-compose run --rm testpython2
+test-python3.6:
+	@docker-compose run --rm testpython3.6
+
+test-python3.7:
+	@docker-compose run --rm testpython3.7
+
+test-python3.8:
+	@docker-compose run --rm testpython3.8
 
 test-python3:
 	@docker-compose run --rm testpython3
 
-
-test_debug: build
-	@docker-compose up --force-recreate testpython2_debug testpython3_debug
 
 publish:
 	@python setup.py register && python setup.py sdist upload

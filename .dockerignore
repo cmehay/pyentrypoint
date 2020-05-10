@@ -3,3 +3,5 @@
 !setup.py
 !README.md
 !tests
+!poetry.lock
+!pyproject.toml

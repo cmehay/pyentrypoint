@@ -1,9 +1,6 @@
 """
     Send signal to pid 1 to reload service
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import glob
 import os
 import signal
@@ -38,7 +35,7 @@ class Reload(FileSystemEventHandler):
         else:
             self.log.debug(
                 'Reloader triggered but file {file} is not watched'.format(
-                    file=file
+                    file=event.src_path
                 )
             )
 
@@ -57,7 +54,7 @@ class Reloader(object):
         sig_attr = getattr(signal, sig)
         try:
             assert int(sig_attr)
-        except:
+        except BaseException:
             raise Exception('Wrong signal provided for reload')
         self.observer = Observer()
         rel = Reload(sig=sig_attr, reloader=self)
