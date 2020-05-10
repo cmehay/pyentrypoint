@@ -1,10 +1,9 @@
 """
     Configuration object
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import os
+from distutils.util import strtobool
+from fnmatch import fnmatch
 from grp import getgrnam
 from io import open
 from pwd import getpwnam
@@ -20,6 +19,10 @@ from .logs import Logs
 from .reloader import Reloader
 
 __all__ = ['Config']
+
+
+def envtobool(key, default):
+    return bool(strtobool(os.environ.get(key, str(default))))
 
 
 class ConfigMeta(object):
@@ -127,7 +130,13 @@ class Config(ConfigMeta):
     @property
     def has_config(self):
         "Has config file provided."
-        return len(self._config) is not 0
+        return len(self._config) != 0
+
+    @property
+    def commands(self):
+        "Handled commands"
+        rtn = self._return_item_lst('commands')
+        return rtn
 
     @property
     def command(self):
@@ -135,8 +144,16 @@ class Config(ConfigMeta):
         if self._command:
             return self._command
         cmd = self._args[0] if self._args else ''
+        if 'commands' in self._config:
+            commands = self._return_item_lst('commands')
+            if [p for p in commands if fnmatch(self._args[0], p)]:
+                self._command = Command(cmd, self, self._args)
+                return self._command
         for key in ['command', 'cmd']:
             if key in self._config:
+                self.log.warning(
+                    '"command" is deprecated, use "commands" instead',
+                )
                 cmd = self._config[key]
         self._command = Command(cmd, self, self._args)
         return self._command
@@ -145,9 +162,18 @@ class Config(ConfigMeta):
     def subcommands(self):
         """Subcommands to handle as arguments."""
         rtn = self._return_item_lst('subcommands')
-        if not rtn:
+        if rtn:
+            self.log.warning(
+                '"subcommands" is deprecated, '
+                'subcommands will not be handled anymore.',
+            )
+            if self.commands:
+                self.log.warning(
+                    '"subcommands" is ignored as long "commands" in present',
+                )
+            return rtn
+        else:
             return ['-*']
-        return rtn
 
     @property
     def user(self):
@@ -214,7 +240,7 @@ class Config(ConfigMeta):
         if self._reload:
             return self._reload
         if (not self._config.get('reload') or
-                'ENTRYPOINT_DISABLE_RELOAD' in os.environ):
+                envtobool('ENTRYPOINT_DISABLE_RELOAD', False)):
             return None
         self._reload = self.get_reloader()
         return self._reload
@@ -236,7 +262,7 @@ class Config(ConfigMeta):
     @property
     def debug(self):
         """Enable debug logs."""
-        if 'ENTRYPOINT_DEBUG' in os.environ:
+        if envtobool('ENTRYPOINT_DEBUG', False):
             return True
         if 'debug' in self._config:
             return bool(self._config['debug'])
@@ -247,23 +273,23 @@ class Config(ConfigMeta):
         """Disable logging"""
         if self.debug:
             return False
-        if 'ENTRYPOINT_QUIET' in os.environ:
+        if envtobool('ENTRYPOINT_QUIET', False):
             return True
         return bool(self._config.get('quiet', False))
 
     @property
     def is_disabled(self):
         """Return if service is disabled using environment"""
-        return 'ENTRYPOINT_DISABLE_SERVICE' in os.environ
+        return envtobool('ENTRYPOINT_DISABLE_SERVICE', False)
 
     @property
     def should_config(self):
         """Check environment to tell if config should apply anyway"""
-        return 'ENTRYPOINT_FORCE' in os.environ
+        return envtobool('ENTRYPOINT_FORCE', False)
 
     @property
     def raw_output(self):
         """Check if command output should be displayed using logging or not"""
-        if 'ENTRYPOINT_RAW' in os.environ:
+        if envtobool('ENTRYPOINT_RAW', False):
             return True
         return bool(self._config.get('raw_output', False))

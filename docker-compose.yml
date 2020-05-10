@@ -13,9 +13,9 @@ testpython3:
         file: common.yml
         service: environ
 
-testpython2:
+testpython3.6:
     build: .
-    dockerfile: Dockerfile-test.py2
+    dockerfile: Dockerfile-test.py3.6
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -28,9 +28,9 @@ testpython2:
         file: common.yml
         service: environ
 
-testpython3_debug:
+testpython3.7:
     build: .
-    dockerfile: Dockerfile-test.py3
+    dockerfile: Dockerfile-test.py3.7
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -39,14 +39,13 @@ testpython3_debug:
         - test2
         - test3
         - test4
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
     extends:
         file: common.yml
         service: environ
 
-testpython2_debug:
+testpython3.8:
     build: .
-    dockerfile: Dockerfile-test.py2
+    dockerfile: Dockerfile-test.py3.8
     volumes:
         - ./pyentrypoint:/opt/pyentrypoint:ro
         - ./tests:/opt/tests
@@ -55,7 +54,6 @@ testpython2_debug:
         - test2
         - test3
         - test4
-    command: ["py.test", "--verbose", "-s", "-rw", "."]
     extends:
         file: common.yml
         service: environ

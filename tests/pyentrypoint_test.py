@@ -1,15 +1,12 @@
 # Tests using pytest
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import fnmatch
 import os
 from multiprocessing import Process
 
 import pytest
 from commons import clean_env
+from yaml import FullLoader
 from yaml import load
-from yaml import Loader
 
 from pyentrypoint import DockerLinks
 from pyentrypoint import Entrypoint
@@ -119,7 +116,7 @@ def test_templates():
 
         for _, config_file in conf.get_templates():
             with open(config_file, mode='r') as r:
-                test = load(stream=r, Loader=Loader)
+                test = load(stream=r, Loader=FullLoader)
 
             assert len(set(test['All links'])) == 4
             assert len(set(test['All links 1'])) == 2
@@ -311,3 +308,17 @@ def test_disabled_service():
         entry.exit_if_disabled()
 
     del os.environ['ENTRYPOINT_DISABLE_SERVICE']
+
+
+def test_commands_handling():
+    cat = Entrypoint(conf='configs/commands.yml', args=['cat', 'hello'])
+    sleep = Entrypoint(conf='configs/commands.yml', args=['sleep', '1'])
+    bash = Entrypoint(conf='configs/commands.yml', args=['bash'])
+    zsh = Entrypoint(conf='configs/commands.yml', args=['zsh', '-c', 'exit'])
+    empty = Entrypoint(conf='configs/empty.yml', args=['zsh', '-c', 'exit'])
+
+    assert cat.is_handled
+    assert sleep.is_handled
+    assert bash.is_handled
+    assert not zsh.is_handled
+    assert empty.is_handled

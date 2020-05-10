@@ -11,6 +11,13 @@ This tool avoids writing shell scripts to:
 
 [![Documentation Status](https://readthedocs.org/projects/pyentrypoint/badge/?version=latest)](http://pyentrypoint.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/cmehay/pyentrypoint.svg?branch=master)](https://travis-ci.org/cmehay/pyentrypoint)
 
+
+## Changelog
+
+ * V0.6.0 (2020-05-10)
+  * Drop python 2 support
+  * Deprecation of `command` and `subcommands` settings for `commands` (see bellow)
+
 ## Usages
 
 ### Install in container
@@ -56,10 +63,17 @@ FROM    goldy/pyentrypoint:python3
 
 Available with many flavours:
 
-- `goldy/pyentrypoint:python2`
 - `goldy/pyentrypoint:python3`
-- `goldy/pyentrypoint:python2-alpine`
+- `goldy/pyentrypoint:python3.6`
+- `goldy/pyentrypoint:python3.7`
+- `goldy/pyentrypoint:python3.8`
 - `goldy/pyentrypoint:python3-alpine`
+- `goldy/pyentrypoint:python3.6-alpine`
+- `goldy/pyentrypoint:python3.7-alpine`
+- `goldy/pyentrypoint:python3.8-alpine`
+
+
+
 
 ### Working examples
  - [Tor hidden service](https://github.com/cmehay/docker-tor-hidden-service)
@@ -71,12 +85,26 @@ This is an example of `entrypoint-config.yml` file.
 ```yaml
 # Entrypoint configuration example
 
+# This entry list commands handled by entrypoint.
+# If you run the container with a command not in this list,
+# pyentrypoint will run the command directly without any action
+# If this option and `command` are not set, all commands will be handled.
+# Support wildcard
+commands:
+    - git
+    - sl*
+
+# DEPRECATED: This option is remplaced by `commands`
 # This entry should reflect CMD in Dockerfile
+# If `commands` is present, this option will be ignored.
+# DEPRECATED: This option is remplaced by `commands`
 command: git
 
+# DEPRECATED: This option will be dropped
 # This is a list with some subcommands to handle
 # when CMD is not `git` here.
 # By default, all args started with hyphen are handled.
+# DEPRECATED: This option will be dropped
 subcommands:
     - "-*"
     - clone
@@ -91,7 +119,7 @@ subcommands:
 user: 1000
 group: 1000
 
-# These files should exist (ADD or COPY)
+# These files should exist (ADD, COPY or mounted)
 # and should be jinja templated.
 # Note: if config files end with ".tpl", the extension will be removed.
 config_files:

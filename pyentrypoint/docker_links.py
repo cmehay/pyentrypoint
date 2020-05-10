@@ -3,9 +3,6 @@
     DockerLinks a kiss class which help to get links info in a docker
     container.
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import json
 import os
 import re
@@ -118,7 +115,7 @@ class DockerLinks(object):
 
 def _find_ports(link_name):
     rtn = {}
-    p = re.compile('^{link}_PORT_(\d*)_(UDP|TCP)$'.format(link=link_name))
+    p = re.compile('^{link}_PORT_([0-9]+)_(UDP|TCP)$'.format(link=link_name))
     for key in os.environ:
         m = p.match(key)
         if m:

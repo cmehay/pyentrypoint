@@ -1,8 +1,4 @@
 "Run commands"
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 from multiprocessing import Process
 from subprocess import PIPE
 from subprocess import Popen
@@ -27,9 +23,9 @@ class Runner(object):
         def dispout(output, cb):
             enc = stdout.encoding or 'UTF-8'
             output = output.decode(enc).split('\n')
-            l = len(output)
+            lenght = len(output)
             for c, line in enumerate(output):
-                if c + 1 == l and not len(line):
+                if c + 1 == lenght and not len(line):
                     # Do not display last empty line
                     break
                 cb(line)
