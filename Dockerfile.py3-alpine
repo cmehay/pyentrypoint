@@ -5,6 +5,7 @@ ENV POETRY_VIRTUALENVS_CREATE=false
 ADD . /tmp/
 
 RUN cd /tmp && \
+    apk add gcc && \
     pip install --upgrade pip poetry && \
     poetry install --no-dev && \
     rm -rf *
