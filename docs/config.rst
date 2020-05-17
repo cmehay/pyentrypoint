@@ -110,6 +110,19 @@ This is an example of ``entrypoint-config.yml`` file.
 yaml references
 ~~~~~~~~~~~~~~~
 
+commands
+^^^^^^^^
+This setup lists commands handled by entrypoint.
+If you run the container with a command not in this list,
+pyentrypoint will run the command directly without any action
+If this setting and `command` are not set, all commands will be handled.
+Support wildcard
+
+.. code:: yaml
+commands:
+    - git
+    - sl*
+
 command
 ^^^^^^^
 
@@ -117,6 +130,10 @@ command
 
 If the container is not started with this commande,
 the configuration will not be applied.
+
+.. pull-quote::
+
+    **DEPRECATED**: This setup is remplaced by ``commands``.
 
 subcommands
 ^^^^^^^^^^^
@@ -135,7 +152,7 @@ Running container with a matching subcommand run it with setuped ``command``.
 
 .. pull-quote::
 
-    **Note**: Globbing pattern is enabled here.
+    **DEPRECATED**: This setup will be dropped.
 
     By default, all args started with hyphen are handled.
 
@@ -289,3 +306,40 @@ quiet
 ^^^^^
 
 Do not output anything except error
+
+
+Handled command matching
+========================
+
+All settings can be mapped to an handled command.
+
+For instance:
+
+.. code:: yaml
+
+    # This config will handle command `abc` and `xyz`
+    commands:
+    - abc
+    - xyz
+
+    # you can map commands to handled commands bellow
+    pre_conf_commands:
+    - abc:
+        - echo "will run for command abc"
+    - xyz:
+        - echo "will run for command xyz"
+        - echo "Can be multiple"
+    - echo "Will run for both commands"
+
+    user:
+    - abc: 1000
+    - xyz: 1001
+
+    # Mapping can also be a dictionnary
+    group:
+    abc: 1000
+    xyz: 1001
+
+    # Etc
+
+Not supported for deprecated settings `command`, `subcommands` and `links`.

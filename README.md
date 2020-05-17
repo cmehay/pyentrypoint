@@ -14,9 +14,12 @@ This tool avoids writing shell scripts to:
 
 ## Changelog
 
- * V0.6.0 (2020-05-10)
-  * Drop python 2 support
-  * Deprecation of `command` and `subcommands` settings for `commands` (see bellow)
+###### v0.7.0 (2020-05-17)
+  - Add command matching setup
+
+###### V0.6.0 (2020-05-10)
+  - Drop python 2 support
+  - Deprecation of `command` and `subcommands` settings for `commands` (see bellow)
 
 ## Usages
 
@@ -88,7 +91,7 @@ This is an example of `entrypoint-config.yml` file.
 # This entry list commands handled by entrypoint.
 # If you run the container with a command not in this list,
 # pyentrypoint will run the command directly without any action
-# If this option and `command` are not set, all commands will be handled.
+# If this setting and `command` are not set, all commands will be handled.
 # Support wildcard
 commands:
     - git
@@ -188,6 +191,44 @@ debug: true
 # Do not output anything except error
 quiet: false
 ```
+
+#### Handled command matching
+
+All settings can be mapped to an handled command.
+
+For instance:
+
+```yaml
+
+# This config will handle command `abc` and `xyz`
+commands:
+  - abc
+  - xyz
+
+# you can map commands to handled commands bellow
+pre_conf_commands:
+  - abc:
+    - echo "will run for command abc"
+  - xyz:
+    - echo "will run for command xyz"
+    - echo "Can be multiple"
+  - echo "Will run for both commands"
+
+user:
+  - abc: 1000
+  - xyz: 1001
+
+# Mapping can also be a dictionnary
+group:
+  abc: 1000
+  xyz: 1001
+
+# Etc
+```
+
+Not supported for deprecated settings `command`, `subcommands` and `links`.
+
+
 
 ### Config templates
 

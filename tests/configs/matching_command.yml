@@ -1,0 +1,62 @@
+commands:
+    - bash
+
+user:
+    - bash: 1000
+    - zsh: 1001
+
+group:
+    bash: 1002
+    zsh: 1003
+
+config_files:
+    - bash:
+        - file1.tpl
+        - file2: file3
+        - file4
+    - zsh:
+        - file5.tpl
+        - file6: file7
+        - file8
+    - file9
+    - file10: file11
+
+secret_env:
+    - secret1
+    - bash:
+        - secret2
+    - zsh:
+        - secret3
+
+pre_conf_commands:
+    - bash:
+        - cmd1
+    - zsh:
+        - cmd2
+    - cmd3
+
+post_conf_commands:
+    - cmd4
+    - zsh:
+        - cmd5
+    - bash:
+        - cmd6
+
+post_run_commands:
+    - bash:
+        - cmd7
+    - cmd8
+    - zsh:
+        - cmd9
+
+debug:
+    - zsh: false
+    - '*sh': true
+
+clean_env:
+    - bash: true
+    - '*sh': false
+
+remove_dockerenv:
+    - bash: true
+    - zsh: true
