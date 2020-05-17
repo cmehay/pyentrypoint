@@ -35,6 +35,64 @@ class ConfigMeta(object):
             return self._config[item]
         return []
 
+    def _match_command(self, match):
+        if self._args:
+            return bool(fnmatch(self._args[0], match))
+        return False
+
+    def _check_command_match_key(self, dic, item):
+        if len(dic) != 1:
+            raise Exception('{item} setup missformated.'.format(item=item))
+
+    def _get_by_command(self, item=None, content=None, value_types=[]):
+        """Return settings for handled command"""
+
+        def _mapping_list(content):
+            for d in content:
+                if not isinstance(d, dict):
+                    raise Exception(
+                        '{item} setup missformated.'.format(item=item))
+                value = _mapping_dict(d)
+                if value:
+                    return value
+
+        def _mapping_dict(content, check_value=False):
+            for key, value in content.items():
+                if check_value and not isinstance(value, list):
+                    return content
+                if self._match_command(key):
+                    return value
+
+        if not content:
+            if item not in self._config:
+                return [] if list in value_types else None
+            content = self._config[item]
+
+        if list not in value_types:
+            if isinstance(content, dict):
+                return _mapping_dict(content, dict in value_types)
+            if isinstance(content, list):
+                return _mapping_list(content)
+            return content
+
+        if not isinstance(content, list):
+            raise Exception('{item} setup missformated.'.format(item=item))
+
+        rtn = []
+        for line in content:
+            parsed = self._get_by_command(item=item,
+                                          content=line,
+                                          value_types=[
+                                              t for t in value_types
+                                              if t is dict
+                                          ])
+            if parsed and isinstance(parsed, list):
+                rtn.extend(parsed)
+                continue
+            if parsed:
+                rtn.append(parsed)
+        return rtn
+
     def get_templates(self):
         """Returns iterator of tuple (template, config_file)"""
         config_files = self.config_files
@@ -180,9 +238,10 @@ class Config(ConfigMeta):
         "Unix user or uid to run command."
         self._get_from_env(env='ENTRYPOINT_USER', key='user')
         if 'user' in self._config:
-            if isinstance(self._config['user'], int):
-                return self._config['user']
-            return getpwnam(self._config['user']).pw_uid
+            user = self._get_by_command(item='user', value_types=[int, str])
+            if isinstance(user, int):
+                return user
+            return getpwnam(user).pw_uid
         return os.getuid()
 
     @property
@@ -190,20 +249,23 @@ class Config(ConfigMeta):
         "Unix group or gid to run command."
         self._get_from_env(env='ENTRYPOINT_GROUP', key='group')
         if 'group' in self._config:
-            if isinstance(self._config['group'], int):
-                return self._config['group']
-            return getgrnam(self._config['group']).gr_gid
+            group = self._get_by_command(item='group', value_types=[int, str])
+            if isinstance(group, int):
+                return group
+            return getgrnam(group).gr_gid
         return os.getgid()
 
     @property
     def config_files(self):
         "List of template config files."
-        return self._return_item_lst('config_files')
+        return self._get_by_command(item='config_files',
+                                    value_types=[list, dict])
 
     @property
     def secret_env(self):
         """Environment variables to delete before running command."""
-        return self._return_item_lst('secret_env')
+        return self._get_by_command(item='secret_env',
+                                    value_types=[list])
 
     @property
     def links(self):
@@ -221,17 +283,20 @@ class Config(ConfigMeta):
     @property
     def pre_conf_commands(self):
         """Return list of preconf commands"""
-        return self._return_item_lst('pre_conf_commands')
+        return self._get_by_command(item='pre_conf_commands',
+                                    value_types=[list])
 
     @property
     def post_conf_commands(self):
         """Return list of postconf commands"""
-        return self._return_item_lst('post_conf_commands')
+        return self._get_by_command(item='post_conf_commands',
+                                    value_types=[list])
 
     @property
     def post_run_commands(self):
         """Return list of post run commands"""
-        return self._return_item_lst('post_run_commands')
+        return self._get_by_command(item='post_run_commands',
+                                    value_types=[list])
 
     @property
     def reload(self):
@@ -249,14 +314,16 @@ class Config(ConfigMeta):
     def clean_env(self):
         """Clean env from linked containers before running command"""
         if 'clean_env' in self._config:
-            return bool(self._config['clean_env'])
+            return bool(self._get_by_command(item='clean_env',
+                                             value_types=[bool]))
         return True
 
     @property
     def remove_dockerenv(self):
         """Remove dockerenv and dockerinit files"""
         if 'remove_dockerenv' in self._config:
-            return bool(self._config['remove_dockerenv'])
+            return bool(self._get_by_command(item='remove_dockerenv',
+                                             value_types=[bool]))
         return True
 
     @property
@@ -265,7 +332,8 @@ class Config(ConfigMeta):
         if envtobool('ENTRYPOINT_DEBUG', False):
             return True
         if 'debug' in self._config:
-            return bool(self._config['debug'])
+            return bool(self._get_by_command(item='debug',
+                                             value_types=[bool]))
         return False
 
     @property

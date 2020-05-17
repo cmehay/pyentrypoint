@@ -322,3 +322,74 @@ def test_commands_handling():
     assert bash.is_handled
     assert not zsh.is_handled
     assert empty.is_handled
+
+
+def test_command_matching_setup():
+    bash = Entrypoint(conf='configs/matching_command.yml', args=['bash'])
+    zsh = Entrypoint(conf='configs/matching_command.yml', args=['zsh'])
+
+    assert bash.config.user == 1000
+    assert zsh.config.user == 1001
+
+    assert bash.config.group == 1002
+    assert zsh.config.group == 1003
+
+    assert bash.config.config_files == [
+        'file1.tpl',
+        {'file2': 'file3'},
+        'file4',
+        'file9',
+        {'file10': 'file11'},
+    ]
+    assert zsh.config.config_files == [
+        'file5.tpl',
+        {'file6': 'file7'},
+        'file8',
+        'file9',
+        {'file10': 'file11'},
+    ]
+
+    assert bash.config.secret_env == [
+        'secret1',
+        'secret2',
+    ]
+    assert zsh.config.secret_env == [
+        'secret1',
+        'secret3',
+    ]
+
+    assert bash.config.pre_conf_commands == [
+        'cmd1',
+        'cmd3',
+    ]
+    assert zsh.config.pre_conf_commands == [
+        'cmd2',
+        'cmd3',
+    ]
+
+    assert bash.config.post_conf_commands == [
+        'cmd4',
+        'cmd6',
+    ]
+    assert zsh.config.post_conf_commands == [
+        'cmd4',
+        'cmd5',
+    ]
+
+    assert bash.config.post_run_commands == [
+        'cmd7',
+        'cmd8',
+    ]
+    assert zsh.config.post_run_commands == [
+        'cmd8',
+        'cmd9',
+    ]
+
+    assert bash.config.debug
+    assert zsh.config.debug
+
+    assert bash.config.clean_env
+    assert not zsh.config.clean_env
+
+    assert bash.config.remove_dockerenv
+    assert zsh.config.remove_dockerenv

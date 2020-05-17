@@ -1,2 +1,9 @@
+v0.7.0
+  - Add mapping of config commands and conf files to root commands
+
+v0.6.0:
+  - Drop python 2 support
+  - Deprecation of `command` and `subcommands` settings for `commands`
+
 v0.5.0:
   - add post_run_commands in entrypoint-config.yml
