@@ -9,10 +9,10 @@ install:
   - poetry install -v
 script:
   - make test
+before_deploy:
+  - poetry config http-basic.pypi $PYPI_USER $PYPI_PASSWORD
+  - poetry build
 deploy:
-  before_deploy:
-    - poetry config http-basic.pypi $PYPI_USER $PYPI_PASSWORD
-    - poetry build
   provider: script
   script: poetry publish
   on:
