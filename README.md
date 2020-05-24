@@ -14,6 +14,9 @@ This tool avoids writing shell scripts to:
 
 ## Changelog
 
+###### v0.7.1 (2020-05-24)
+  - add envtobool function in configuration template
+
 ###### v0.7.0 (2020-05-17)
   - Add command matching setup
 
@@ -88,7 +91,7 @@ This is an example of `entrypoint-config.yml` file.
 ```yaml
 # Entrypoint configuration example
 
-# This entry list commands handled by entrypoint.
+# This setup lists commands handled by entrypoint.
 # If you run the container with a command not in this list,
 # pyentrypoint will run the command directly without any action
 # If this setting and `command` are not set, all commands will be handled.
@@ -97,17 +100,17 @@ commands:
     - git
     - sl*
 
-# DEPRECATED: This option is remplaced by `commands`
+# DEPRECATED: This setup is remplaced by `commands`
 # This entry should reflect CMD in Dockerfile
-# If `commands` is present, this option will be ignored.
-# DEPRECATED: This option is remplaced by `commands`
+# If `commands` is present, this setup will be ignored.
+# DEPRECATED: This setup is remplaced by `commands`
 command: git
 
-# DEPRECATED: This option will be dropped
+# DEPRECATED: This setup will be dropped
 # This is a list with some subcommands to handle
 # when CMD is not `git` here.
 # By default, all args started with hyphen are handled.
-# DEPRECATED: This option will be dropped
+# DEPRECATED: This setup will be dropped
 subcommands:
     - "-*"
     - clone
@@ -334,6 +337,22 @@ You have 4 available objects in your templates.
 `environ` is the environment of the container (os.environ).
 
 `env` is an alias to `environ`.
+
+##### envtobool
+`envtobool` function is a useful to parse boolean string input in environnement to enable or disable features.
+
+The function accepts a default value as second parameter.
+
+```jinja
+{% if envtobool('SOME_ENV_VARIABLE', False) %}
+do stuff
+{% endif %}
+
+# Will write True or False here
+{envtobool('SOME_OTHER_ENV_VARIABLE', True)}
+```
+
+See https://docs.python.org/3/distutils/apiref.html#distutils.util.strtobool for information on input.
 
 #### yaml and json
 

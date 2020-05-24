@@ -62,3 +62,7 @@ YAML:
 {% for key, val in yaml.load(env['YAML']).items() %}
     '{{key}}': '{{val}}'
 {% endfor %}
+
+ENVTOBOOL:
+    ok: {{ envtobool('OK', False) }}
+    ko: {{ envtobool('KO', True) }}

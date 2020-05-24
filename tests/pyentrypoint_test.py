@@ -153,6 +153,10 @@ def test_templates():
             # test json
             assert test['JSON']['json'] == 'ok'
 
+            # test envtobool
+            assert test['ENVTOBOOL']['ok']
+            assert not test['ENVTOBOOL']['ko']
+
 
 def test_conf_commands():
 
