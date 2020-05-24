@@ -12,6 +12,7 @@ from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
 from .config import Config
+from .config import envtobool
 from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .logs import Logs
@@ -87,6 +88,7 @@ class Entrypoint(object):
                                     environ=os.environ,
                                     json=json,
                                     yaml=yaml,
+                                    envtobool=envtobool,
                                     containers=DockerLinks().to_containers()))
 
     def run_pre_conf_cmds(self):

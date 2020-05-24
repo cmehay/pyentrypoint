@@ -5,3 +5,5 @@ environ:
             {"json": "ok"}
         YAML: |
             yaml: ok
+        OK: 'true'
+        KO: '0'
