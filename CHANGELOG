@@ -1,3 +1,6 @@
+v0.7.2
+  - add set_environment in settings
+
 v0.7.1
   - add envtobool function in configuration template
 

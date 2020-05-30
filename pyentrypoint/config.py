@@ -234,6 +234,12 @@ class Config(ConfigMeta):
             return ['-*']
 
     @property
+    def set_environment(self):
+        """Set environment variables at runtime"""
+        return self._get_by_command(item='set_environment',
+                                    value_types=[list, dict])
+
+    @property
     def user(self):
         "Unix user or uid to run command."
         self._get_from_env(env='ENTRYPOINT_USER', key='user')

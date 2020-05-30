@@ -30,7 +30,7 @@ class Entrypoint(object):
 
     def __init__(self, conf=ENTRYPOINT_FILE, args=[]):
         self._set_logguer()
-        if 'ENTRYPOINT_CONFIG' in os.environ:
+        if os.environ.get('ENTRYPOINT_CONFIG'):
             conf = os.environ['ENTRYPOINT_CONFIG']
         try:
             self.config = Config(conf=conf, args=args)
@@ -91,16 +91,25 @@ class Entrypoint(object):
                                     envtobool=envtobool,
                                     containers=DockerLinks().to_containers()))
 
+    def run_set_enviroment(self):
+        for set_env in self.config.set_environment:
+            if not isinstance(set_env, dict) and not len(set_env) == 1:
+                raise Exception("set_environment is miss configured, "
+                                "please check syntax in entrypoint config")
+            env, cmd = next(((e, c) for e, c in set_env.items()))
+            self.log.debug(f'Set environment variable {env}')
+            os.environ[env] = self.runner.run_cmd(cmd, stdout=True)
+
     def run_pre_conf_cmds(self):
         for cmd in self.config.pre_conf_commands:
             self.runner.run_cmd(cmd)
-        if 'ENTRYPOINT_PRECONF_COMMAND' in os.environ:
+        if os.environ.get('ENTRYPOINT_PRECONF_COMMAND'):
             self.runner.run_cmd(os.environ['ENTRYPOINT_PRECONF_COMMAND'])
 
     def run_post_conf_cmds(self):
         for cmd in self.config.post_conf_commands:
             self.runner.run_cmd(cmd)
-        if 'ENTRYPOINT_POSTCONF_COMMAND' in os.environ:
+        if os.environ.get('ENTRYPOINT_POSTCONF_COMMAND'):
             self.runner.run_cmd(os.environ['ENTRYPOINT_POSTCONF_COMMAND'])
 
     def launch(self):
@@ -117,6 +126,7 @@ def main(argv):
             entry.launch()
         entry.config.set_to_env()
         entry.log.debug("Starting config")
+        entry.run_set_enviroment()
         entry.run_pre_conf_cmds()
         entry.apply_conf()
         entry.run_post_conf_cmds()

@@ -27,6 +27,7 @@ pre_conf_commands:
     - echo TEST > /tmp/OK
     - echo "INFO IS DISPLAYED"
     - echo "WARNING IS DISPLAYED\nON TWO LINES" 1>&2
+    - echo ${ENV_1} > /tmp_env_1
 
 post_conf_commands:
     - echo TEST2 > /tmp/OKOK
@@ -36,5 +37,10 @@ post_conf_commands:
     - echo ${ENTRYPOINT_DEBUG} > /tmp/debug
     - echo "INFO IS DISPLAYED\nON TWO LINES"
     - echo "WARNING IS DISPLAYED" 1>&2
+    - echo ${ENV_2} > /tmp_env_2
+
+set_environment:
+    - ENV_1: echo ENV_1 set
+    - ENV_2: echo ENV_2 set
 
 debug: true
