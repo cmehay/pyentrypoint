@@ -171,12 +171,15 @@ def test_conf_commands():
         ('/tmp/user', '1000'),
         ('/tmp/group', '1000'),
         ('/tmp/debug', 'true'),
+        ('/tmp_env_1', 'ENV_1 set'),
+        ('/tmp_env_2', 'ENV_2 set')
     ]
 
     os.environ['ENTRYPOINT_PRECONF_COMMAND'] = 'echo TEST4 > /tmp/OKOKOKOK'
     os.environ['ENTRYPOINT_POSTCONF_COMMAND'] = 'echo TEST5 > /tmp/OKOKOKOKOK'
 
     entry.config.set_to_env()
+    entry.run_set_enviroment()
     entry.run_pre_conf_cmds()
     entry.run_post_conf_cmds()
 
@@ -378,6 +381,13 @@ def test_command_matching_setup():
     assert zsh.config.post_conf_commands == [
         'cmd4',
         'cmd5',
+    ]
+
+    assert bash.config.set_environment == [
+        {'ENV_1': 'echo set ENV_1'}
+    ]
+    assert zsh.config.set_environment == [
+        {'ENV_2': 'echo set ENV_2'}
     ]
 
     assert bash.config.post_run_commands == [

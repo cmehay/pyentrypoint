@@ -74,7 +74,16 @@ This is an example of ``entrypoint-config.yml`` file.
             single: true
             # Set to false to get optional link
             # true by default
-            required: true
+                required: true
+
+    # Set custom environment variable by running commands
+    # Will run before pre_conf_commands and capture stdout only
+    # Stop init if crash
+    set_environment:
+        - ENV_1: echo 'The environment variable ENV_1 will be added with this phrase'
+        - ENV_2: head /dev/urandom | base64
+        - ENV_3: echo ${ENV_1} and ${ENV_2} are now available here
+        - ENV_4: exit 1 || true  # Add this if you need to ignore error
 
     # Commands to run before applying configuration
     pre_conf_commands:

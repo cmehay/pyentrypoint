@@ -36,7 +36,7 @@ def _reloader_check(conf, command):
 
 def test_reloader():
 
-    if 'ENTRYPOINT_DISABLE_RELOAD' in os.environ:
+    if os.environ.get('ENTRYPOINT_DISABLE_RELOAD'):
         os.environ.pop('ENTRYPOINT_DISABLE_RELOAD')
 
     with mock.patch('os.kill') as os_kill:
@@ -58,7 +58,7 @@ def test_disabled_reloader():
 
 def test_reloader_custom():
 
-    if 'ENTRYPOINT_DISABLE_RELOAD' in os.environ:
+    if os.environ.get('ENTRYPOINT_DISABLE_RELOAD'):
         os.environ.pop('ENTRYPOINT_DISABLE_RELOAD')
 
     subprocess.check_call(['mkdir', '-p', '/tmp/1', '/tmp/2'])

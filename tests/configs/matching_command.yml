@@ -49,6 +49,12 @@ post_run_commands:
     - zsh:
         - cmd9
 
+set_environment:
+    - bash:
+        - ENV_1: echo set ENV_1
+    - zsh:
+        - ENV_2: echo set ENV_2
+
 debug:
     - zsh: false
     - '*sh': true
