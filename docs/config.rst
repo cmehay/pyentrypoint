@@ -83,7 +83,7 @@ This is an example of ``entrypoint-config.yml`` file.
         - ENV_1: echo 'The environment variable ENV_1 will be added with this phrase'
         - ENV_2: head /dev/urandom | base64
         - ENV_3: echo ${ENV_1} and ${ENV_2} are now available here
-        - ENV_4: exit 1 || true  # Add this if you need to ignore error
+        - ENV_4: exit 1 || true  # Set like this if you need to ignore error
 
     # Commands to run before applying configuration
     pre_conf_commands:
