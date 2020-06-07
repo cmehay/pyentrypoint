@@ -108,7 +108,7 @@ def test_containers():
 def test_templates():
     test_confs = ['configs/base.yml']
     for test_conf in test_confs:
-        entry = Entrypoint(conf='configs/base.yml')
+        entry = Entrypoint(conf=test_conf)
 
         conf = entry.config
 
