@@ -93,8 +93,12 @@ This is an example of ``entrypoint-config.yml`` file.
     post_conf_commands:
         - echo "something else" > to_this_another_file
 
+    # commands to run in parallele with the main command
     post_run_commands:
-        - echo run commands after started service
+        - echo do something in parallele with the main command
+
+    # run post_run_commands in parallele or sequentially (default is sequential)
+    run_post_commands_in_parallele: true # default false
 
     # Reload service when configuration change by sending a signal to process
     reload:
@@ -281,6 +285,14 @@ List of shell commands to run after service is started
         - sleep 5
         - echo "something else" > to_this_another_file
 
+run_post_commands_in_parallele
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+run post_run_commands in paralle or sequentially (default is sequential)
+
+.. code:: yaml
+
+    run_post_commands_in_parallele: true
 
 reload
 ^^^^^^

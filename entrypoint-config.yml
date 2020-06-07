@@ -76,6 +76,13 @@ pre_conf_commands:
 post_conf_commands:
     - echo something even useless
 
+# commands to run in parallele with the main command
+post_run_commands:
+    - echo do something in parallele with the main command is ran
+
+# run porst_run_commands in parallele or sequentially (default is sequential)
+run_post_commands_in_parallele: true # default false
+
 # Reload service when configuration change by sending a signal to process
 reload:
     signal: SIGHUP # Optional, signal to send, default is SIGHUP
@@ -84,7 +91,7 @@ reload:
     files: # Optional, list of files to watch
         - /etc/conf/to/watch
 # can also be enabled with a boolean:
-reload: true
+# reload: true
 
 # Cleanup environment from variables created by linked containers
 # before running command (True by default)

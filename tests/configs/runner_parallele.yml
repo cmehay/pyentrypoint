@@ -4,3 +4,5 @@ post_run_commands:
     - date '+%s' > /tmp/timestamp2
 
 command: sleep
+
+run_post_commands_in_parallele: true

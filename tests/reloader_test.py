@@ -1,24 +1,13 @@
 "Tests for reloader"
-
-
-try:
-    # Python2
-    import mock
-except ImportError:
-    # Python3
-    from unittest import mock
-
 import os
-
-from pyentrypoint import Entrypoint
-
 import subprocess
-
 from signal import SIGHUP
-
 from time import sleep
+from unittest import mock
 
 from commons import clean_env
+
+from pyentrypoint import Entrypoint
 
 
 def teardown_function(function):

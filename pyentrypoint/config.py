@@ -335,8 +335,8 @@ class Config(ConfigMeta):
     @property
     def debug(self):
         """Enable debug logs."""
-        if envtobool('ENTRYPOINT_DEBUG', False):
-            return True
+        if 'ENTRYPOINT_DEBUG' in os.environ:
+            return envtobool('ENTRYPOINT_DEBUG', False)
         if 'debug' in self._config:
             return bool(self._get_by_command(item='debug',
                                              value_types=[bool]))
@@ -347,8 +347,8 @@ class Config(ConfigMeta):
         """Disable logging"""
         if self.debug:
             return False
-        if envtobool('ENTRYPOINT_QUIET', False):
-            return True
+        if 'ENTRYPOINT_QUIET' in os.environ:
+            return envtobool('ENTRYPOINT_QUIET', False)
         return bool(self._config.get('quiet', False))
 
     @property
@@ -364,6 +364,22 @@ class Config(ConfigMeta):
     @property
     def raw_output(self):
         """Check if command output should be displayed using logging or not"""
-        if envtobool('ENTRYPOINT_RAW', False):
-            return True
-        return bool(self._config.get('raw_output', False))
+        if 'ENTRYPOINT_RAW' in os.environ:
+            return envtobool('ENTRYPOINT_RAW', False)
+        if 'raw_output' in self._config:
+            return bool(self._get_by_command(item='raw_output',
+                                             value_types=[bool]))
+        return False
+
+    @property
+    def run_post_commands_in_parallele(self):
+        """Run all post post run commands in parallele using process"""
+        if 'ENTRYPOINT_RUN_POST_COMMANDS_IN_PARALLELE' in os.environ:
+            return envtobool('ENTRYPOINT_RUN_POST_COMMANDS_IN_PARALLELE',
+                             False)
+        if 'run_post_commands_in_parallele' in self._config:
+            return bool(self._get_by_command(
+                item='run_post_commands_in_parallele',
+                value_types=[bool]
+            ))
+        return False
