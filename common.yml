@@ -7,3 +7,9 @@ environ:
             yaml: ok
         OK: 'true'
         KO: '0'
+        TOML: |
+            [toml]
+            value = 'ok'
+        CONFIGPARSER: |
+            [ini]
+            value = ok

@@ -7,12 +7,14 @@ import os
 from sys import argv
 from sys import exit
 
+import toml
 import yaml
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
 from .config import Config
 from .config import envtobool
+from .configparser import ConfigParser
 from .constants import ENTRYPOINT_FILE
 from .docker_links import DockerLinks
 from .logs import Logs
@@ -88,6 +90,8 @@ class Entrypoint(object):
                                     environ=os.environ,
                                     json=json,
                                     yaml=yaml,
+                                    toml=toml,
+                                    ConfigParser=ConfigParser,
                                     envtobool=envtobool,
                                     containers=DockerLinks().to_containers()))
 
