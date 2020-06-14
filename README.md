@@ -293,14 +293,28 @@ Accessing environment in template.
 
 ### Accessible objects
 
-You have 4 available objects in your templates.
+You have 8 available objects in your templates.
 
  - `config`
  - `links`
  - `containers`
  - `environ`
- - `yaml`
- - `json`
+ - [`yaml`](https://pypi.org/project/PyYAML/)
+ - [`json`](https://docs.python.org/fr/3/library/json.html)
+ - [`toml`](https://pypi.org/project/toml/)
+ - [`ConfigParser`](https://docs.python.org/3/library/configparser.html)
+
+#### ConfigParser
+
+ConfigParser has an extra `to_string` method to write config as string in jinja templace, or can be casted to sting.
+
+`read*` methods also return self object (unlike the original methods which are retuning `None`)
+
+```jinja
+{% set config = ConfigParser().read_string(env['SOME_CONF_IN_ENVIRONMENT'])}
+{# Write parsed config like this #}
+{{ str(config) }}
+```
 
 #### config
 

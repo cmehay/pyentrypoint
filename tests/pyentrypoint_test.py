@@ -144,8 +144,8 @@ def test_templates():
                 int(id, base=16)
 
             # test env
-            assert test['ENV']['SECRET'] == 'nothing'
-            assert test['ENVIRON']['SECRET'] == 'nothing'
+            assert test['ENV']['SECRET'].strip() == 'nothing'
+            assert test['ENVIRON']['SECRET'].strip() == 'nothing'
 
             # test yaml
             assert test['YAML']['yaml'] == 'ok'
@@ -156,6 +156,12 @@ def test_templates():
             # test envtobool
             assert test['ENVTOBOOL']['ok']
             assert not test['ENVTOBOOL']['ko']
+
+            # test toml
+            assert test['TOML'].strip() == '[toml]\nvalue = "ok"'
+
+            # test configparser
+            assert test['CONFIGPARSER'].strip() == '[ini]\nvalue = ok'
 
 
 def test_conf_commands():

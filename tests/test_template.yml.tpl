@@ -20,14 +20,16 @@ All links 2:
 All environ:
 {% for link in links.all %}
     {% for key in link.environ %}
-    {{key}}: {{link.environ[key]}}
+    {{key}}:
+        {{link.environ[key] | indent(8)}}
     {% endfor %}
 {% endfor %}
 
 All links 2 environ:
 {% for link in links.test2 %}
     {% for key in link.environ %}
-    {{key}}: {{link.environ[key]}}
+    {{key}}:
+        {{link.environ[key] | indent(8)}}
     {% endfor %}
 {% endfor %}
 
@@ -45,12 +47,14 @@ ID:
 
 ENV:
 {% for e in env %}
-    '{{e}}': '{{env[e]}}'
+    '{{e}}': |
+        {{ env[e] | indent(8) }}
 {% endfor %}
 
 ENVIRON:
 {% for e in environ %}
-    '{{e}}': '{{env[e]}}'
+    '{{e}}': |
+        {{ env[e] | indent(8) }}
 {% endfor %}
 
 JSON:
@@ -66,3 +70,9 @@ YAML:
 ENVTOBOOL:
     ok: {{ envtobool('OK', False) }}
     ko: {{ envtobool('KO', True) }}
+
+TOML: |
+    {{ toml.dumps(toml.loads(env['TOML'])) | indent }}
+
+CONFIGPARSER: |
+    {{ ConfigParser().read_string(env['CONFIGPARSER']).to_string() | indent }}

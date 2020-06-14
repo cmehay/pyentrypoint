@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "pyentrypoint"
-version = "0.7.3"
+version = "0.7.4"
 description = "pyentrypoint manages entrypoints in Docker containers."
 license = "WTFPL"
 classifiers = ["Programming Language :: Python", "Development Status :: 1 - Planning", "License :: OSI Approved :: BSD License", "Natural Language :: English", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 2", "Programming Language :: Python :: 3", "Programming Language :: Python :: 2.7", "Programming Language :: Python :: 3.6", "Topic :: System :: Installation/Setup"]
@@ -16,6 +16,7 @@ jinja2 = "^2.11"
 pyyaml = "^5.3"
 six = "^1.14"
 watchdog = "^0.10"
+toml = "^0.10.1"
 
 
 [tool.poetry.dev-dependencies]
