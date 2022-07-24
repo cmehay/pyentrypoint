@@ -13,36 +13,6 @@ testpython3:
         file: common.yml
         service: environ
 
-testpython3.6:
-    build: .
-    dockerfile: Dockerfile-test.py3.6
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
-    links:
-        - test1
-        - test2
-        - test3
-        - test4
-    extends:
-        file: common.yml
-        service: environ
-
-testpython3.7:
-    build: .
-    dockerfile: Dockerfile-test.py3.7
-    volumes:
-        - ./pyentrypoint:/opt/pyentrypoint:ro
-        - ./tests:/opt/tests
-    links:
-        - test1
-        - test2
-        - test3
-        - test4
-    extends:
-        file: common.yml
-        service: environ
-
 testpython3.8:
     build: .
     dockerfile: Dockerfile-test.py3.8
@@ -57,6 +27,38 @@ testpython3.8:
     extends:
         file: common.yml
         service: environ
+
+testpython3.9:
+    build: .
+    dockerfile: Dockerfile-test.py3.9
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+    extends:
+        file: common.yml
+        service: environ
+
+
+testpython3.10:
+    build: .
+    dockerfile: Dockerfile-test.py3.10
+    volumes:
+        - ./pyentrypoint:/opt/pyentrypoint:ro
+        - ./tests:/opt/tests
+    links:
+        - test1
+        - test2
+        - test3
+        - test4
+    extends:
+        file: common.yml
+        service: environ
+
 
 test1:
     image: busybox

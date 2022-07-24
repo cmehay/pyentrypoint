@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "pyentrypoint"
-version = "0.7.4"
+version = "0.8.0"
 description = "pyentrypoint manages entrypoints in Docker containers."
 license = "WTFPL"
 classifiers = ["Programming Language :: Python", "Development Status :: 1 - Planning", "License :: OSI Approved :: BSD License", "Natural Language :: English", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 2", "Programming Language :: Python :: 3", "Programming Language :: Python :: 2.7", "Programming Language :: Python :: 3.6", "Topic :: System :: Installation/Setup"]
@@ -10,20 +10,20 @@ authors = ["Christophe Mehay <cmehay@nospam.student.42.fr>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
-colorlog = "^4.1"
-jinja2 = "^2.11"
-pyyaml = "^5.3"
-six = "^1.14"
+python =  ">= 3.8.0, < 3.11"
+colorlog = "*"
+jinja2 = "*"
+pyyaml = "*"
+six = "*"
 watchdog = "^0.10"
-toml = "^0.10.1"
+toml = "*"
 
 
 [tool.poetry.dev-dependencies]
-docker-compose = "^1.25.5"
-pytest = "^5.4.2"
-pytest-mock = "^3.1.0"
-pre-commit = "^2.3.0"
+docker-compose = "*"
+pytest = "*"
+pytest-mock = "*"
+pre-commit = "*"
 
 [build-system]
 requires = ["poetry>=1.0.8"]
